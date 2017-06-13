@@ -1,6 +1,7 @@
 package org.xpande.core.model;
 
 import org.compiere.model.*;
+import org.compiere.util.DB;
 
 /**
  * ModelValidator para funciones del Core.
@@ -60,20 +61,37 @@ public class ValidatorCore implements ModelValidator {
     public String modelChange(MProduct model, int type) throws Exception {
 
         String mensaje = null;
+        String sql = "", whereClause = "";
+        int contador = 0;
 
         if ((type == ModelValidator.TYPE_BEFORE_NEW) || (type == ModelValidator.TYPE_BEFORE_CHANGE)){
 
-            // Me aseguro nombres de producto en mayúsculas
-            if (model.getName() != null){
-                model.setName(model.getName().toUpperCase());
+            // Valido codigo único de producto
+            if (model.get_ID() > 0){
+                whereClause = " and m_product_id !=" + model.get_ID();
             }
+
+            sql = " select count(*) from m_product where lower(value) ='" + model.getValue().trim().toLowerCase() + "' " + whereClause;
+            contador = DB.getSQLValueEx(model.get_TrxName(), sql);
+            if (contador > 0){
+                return "Ya existe un producto definido en el sistema con este código";
+            }
+
+            // Codigo de barra sin espacios al final
+            model.setValue(model.getValue().trim());
+
+            // Me aseguro nombre y descripcion de producto en mayúsculas
+            if (model.getName() != null){
+                model.setName(model.getName().toUpperCase().trim());
+            }
+
             if (model.getDescription() != null){
-                model.setDescription(model.getDescription().toUpperCase());
+                model.setDescription(model.getDescription().toUpperCase().trim());
             }
         }
 
-
         return mensaje;
+
     }
 
 }
