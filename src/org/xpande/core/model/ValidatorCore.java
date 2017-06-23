@@ -71,14 +71,16 @@ public class ValidatorCore implements ModelValidator {
                 whereClause = " and m_product_id !=" + model.get_ID();
             }
 
-            sql = " select count(*) from m_product where lower(value) ='" + model.getValue().trim().toLowerCase() + "' " + whereClause;
-            contador = DB.getSQLValueEx(model.get_TrxName(), sql);
-            if (contador > 0){
-                return "Ya existe un producto definido en el sistema con este código";
-            }
+            if (model.getValue() != null){
+                sql = " select count(*) from m_product where lower(value) ='" + model.getValue().trim().toLowerCase() + "' " + whereClause;
+                contador = DB.getSQLValueEx(model.get_TrxName(), sql);
+                if (contador > 0){
+                    return "Ya existe un producto definido en el sistema con este código";
+                }
 
-            // Codigo de barra sin espacios al final
-            model.setValue(model.getValue().trim());
+                // Codigo interno sin espacios al final
+                model.setValue(model.getValue().trim());
+            }
 
             // Me aseguro nombre y descripcion de producto en mayúsculas
             if (model.getName() != null){
