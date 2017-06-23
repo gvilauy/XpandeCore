@@ -55,4 +55,23 @@ public class MZProductoUPC extends X_Z_ProductoUPC {
         return model;
     }
 
+
+    /***
+     * Obtiene y retorna modelo según id de producto recibido.
+     * En caso de tener mas de un codigo de barras para ese producto, se retorna solamente el último creado.
+     * Xpande. Created by Gabriel Vila on 6/22/17.
+     * @param ctx
+     * @param mProductID
+     * @param trxName
+     * @return
+     */
+    public static MZProductoUPC getByProduct(Properties ctx, int mProductID, String trxName){
+
+        String whereClause = X_Z_ProductoUPC.COLUMNNAME_M_Product_ID + "=" + mProductID;
+
+        MZProductoUPC model = new Query(ctx, I_Z_ProductoUPC.Table_Name, whereClause, trxName).setOrderBy(" Z_ProductoUPC.Created Desc ").first();
+
+        return model;
+    }
+
 }
