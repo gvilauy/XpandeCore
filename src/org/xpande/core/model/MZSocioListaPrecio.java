@@ -3,6 +3,7 @@ package org.xpande.core.model;
 import org.compiere.model.Query;
 
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -41,4 +42,21 @@ public class MZSocioListaPrecio extends X_Z_SocioListaPrecio {
 
     }
 
+    /***
+     * Obtiene y retorna lista de modelos para un determinado socio de negocio recibido.
+     * Xpande. Created by Gabriel Vila on 6/26/17.
+     * @param ctx
+     * @param cBPartnerID
+     * @param trxName
+     * @return
+     */
+    public static List<MZSocioListaPrecio> getByPartner(Properties ctx, int cBPartnerID, String trxName){
+
+        String whereClause = X_Z_SocioListaPrecio.COLUMNNAME_C_BPartner_ID + " =" + cBPartnerID;
+
+        List<MZSocioListaPrecio> lines = new Query(ctx, I_Z_SocioListaPrecio.Table_Name, whereClause, trxName).setOnlyActiveRecords(true).list();
+
+        return lines;
+
+    }
 }
