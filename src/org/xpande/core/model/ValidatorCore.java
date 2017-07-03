@@ -2,6 +2,9 @@ package org.xpande.core.model;
 
 import org.compiere.model.*;
 import org.compiere.util.DB;
+import org.compiere.util.Env;
+
+import java.math.BigDecimal;
 
 /**
  * ModelValidator para funciones del Core.
@@ -22,6 +25,7 @@ public class ValidatorCore implements ModelValidator {
 
         // DB Validations
         engine.addModelChange(I_M_Product.Table_Name, this);
+        engine.addModelChange(I_C_Conversion_Rate.Table_Name, this);
 
     }
 
@@ -41,6 +45,10 @@ public class ValidatorCore implements ModelValidator {
         if (po.get_TableName().equalsIgnoreCase(I_M_Product.Table_Name)){
             return modelChange((MProduct) po, type);
         }
+        else if (po.get_TableName().equalsIgnoreCase(I_C_Conversion_Rate.Table_Name)){
+            return modelChange((MConversionRate) po, type);
+        }
+
 
         return null;
     }
@@ -89,6 +97,93 @@ public class ValidatorCore implements ModelValidator {
 
             if (model.getDescription() != null){
                 model.setDescription(model.getDescription().toUpperCase().trim());
+            }
+        }
+
+        return mensaje;
+
+    }
+
+    /***
+     * Validaciones para el modelo de tasas de cambio.
+     * @param model
+     * @param type
+     * @return
+     * @throws Exception
+     */
+    public String modelChange(MConversionRate model, int type) throws Exception {
+
+        String mensaje = null;
+
+        if (type == ModelValidator.TYPE_AFTER_NEW){
+
+            if (!model.get_ValueAsBoolean("IsManualRecord")) return mensaje;
+
+            // Inserto nuevo registro de tasa con la conversión inversa a la ingresada.
+            // Esto se debe a que ADempiere requiere cargar tasa en ambos sentidos.
+            MConversionRate conversionRate = new MConversionRate(model.getCtx(), 0, model.get_TrxName());
+            conversionRate.setAD_Org_ID(model.getAD_Org_ID());
+            conversionRate.setC_Currency_ID(model.getC_Currency_ID_To());
+            conversionRate.setC_Currency_ID_To(model.getC_Currency_ID());
+            conversionRate.setValidFrom(model.getValidFrom());
+            conversionRate.setValidTo(model.getValidTo());
+            conversionRate.setMultiplyRate(model.getDivideRate());
+            conversionRate.setDivideRate(model.getMultiplyRate());
+            conversionRate.setC_ConversionType_ID(model.getC_ConversionType_ID());
+            conversionRate.set_ValueOfColumn("IsManualRecord", false);
+            conversionRate.saveEx();
+
+            // Como el metodo MConversionRate.setMultiplyRate() tiene cuentas y deja una precision grande en el numero,
+            // Tengo que actualizarlo por base de datos
+            String action = " update c_conversion_rate set multiplyrate =" + model.getDivideRate() +
+                    " where c_conversion_rate_id =" + conversionRate.get_ID();
+            DB.executeUpdateEx(action, model.get_TrxName());
+        }
+        else if (type == ModelValidator.TYPE_AFTER_CHANGE){
+
+            if (!model.get_ValueAsBoolean("IsManualRecord")) return mensaje;
+
+            // Me aseguro que la tasa inversa también se actualice
+            String whereClause = X_C_Conversion_Rate.COLUMNNAME_AD_Client_ID + " =" + model.getAD_Client_ID() +
+                    " AND " + X_C_Conversion_Rate.COLUMNNAME_AD_Org_ID + " =" + model.getAD_Org_ID() +
+                    " AND " + X_C_Conversion_Rate.COLUMNNAME_C_Currency_ID + " =" + model.getC_Currency_ID_To() +
+                    " AND " + X_C_Conversion_Rate.COLUMNNAME_C_Currency_ID_To + " =" + model.getC_Currency_ID() +
+                    " AND " + X_C_Conversion_Rate.COLUMNNAME_ValidFrom + " ='" + model.getValidFrom() + "'" +
+                    " AND " + X_C_Conversion_Rate.COLUMNNAME_ValidTo + " ='" + model.getValidTo() + "'" +
+                    " AND " + X_C_Conversion_Rate.COLUMNNAME_C_ConversionType_ID + " =" + model.getC_ConversionType_ID();
+
+            int[] ratesID = MConversionRate.getAllIDs(I_C_Conversion_Rate.Table_Name, whereClause, model.get_TrxName());
+            if (ratesID.length > 0){
+                MConversionRate conversionRate = new MConversionRate(model.getCtx(), ratesID[0], model.get_TrxName());
+                conversionRate.setMultiplyRate(model.getDivideRate());
+                conversionRate.setDivideRate(model.getMultiplyRate());
+                conversionRate.saveEx();
+
+                // Como el metodo MConversionRate.setMultiplyRate() tiene cuentas y deja una precision grande en el numero,
+                // Tengo que actualizarlo por base de datos
+                String action = " update c_conversion_rate set multiplyrate =" + model.getDivideRate() +
+                        " where c_conversion_rate_id =" + conversionRate.get_ID();
+                DB.executeUpdateEx(action, model.get_TrxName());
+
+            }
+        }
+        else if (type == ModelValidator.TYPE_AFTER_DELETE){
+
+            if (!model.get_ValueAsBoolean("IsManualRecord")) return mensaje;
+
+            // Me aseguro que la tasa inversa también se actualice
+            String whereClause = X_C_Conversion_Rate.COLUMNNAME_AD_Client_ID + " =" + model.getAD_Client_ID() +
+                    " AND " + X_C_Conversion_Rate.COLUMNNAME_AD_Org_ID + " =" + model.getAD_Org_ID() +
+                    " AND " + X_C_Conversion_Rate.COLUMNNAME_C_Currency_ID + " =" + model.getC_Currency_ID_To() +
+                    " AND " + X_C_Conversion_Rate.COLUMNNAME_C_Currency_ID_To + " =" + model.getC_Currency_ID() +
+                    " AND " + X_C_Conversion_Rate.COLUMNNAME_ValidFrom + " ='" + model.getValidFrom() + "'" +
+                    " AND " + X_C_Conversion_Rate.COLUMNNAME_ValidTo + " ='" + model.getValidTo() + "'" +
+                    " AND " + X_C_Conversion_Rate.COLUMNNAME_C_ConversionType_ID + " =" + model.getC_ConversionType_ID();
+
+            int[] ratesID = MConversionRate.getAllIDs(I_C_Conversion_Rate.Table_Name, whereClause, model.get_TrxName());
+            if (ratesID.length > 0){
+                MConversionRate conversionRate = new MConversionRate(model.getCtx(), ratesID[0], model.get_TrxName());
+                conversionRate.deleteEx(true);
             }
         }
 
