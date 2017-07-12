@@ -1,5 +1,12 @@
 package org.xpande.core.utils;
 
+import org.compiere.util.Env;
+
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
 /**
  * Clase de métodos staticos referidos a utilidades varias para documento.s
  * Product: Adempiere ERP & CRM Smart Business Solution. Localization : Uruguay - Xpande
@@ -26,6 +33,28 @@ public final class StringUtils {
         }
 
         return true;
+    }
+
+    /***
+     * Formatea numero recibido según separadores decimales y de miles recibidos.
+     * Xpande. Created by Gabriel Vila on 7/12/17.
+     * @param value
+     * @param pattern
+     * @param decimalSeparator
+     * @param groupingSeparator
+     * @return
+     */
+    public static String formatSeparators(BigDecimal value, String pattern, String decimalSeparator, String groupingSeparator) {
+
+        if(value == null) value = Env.ZERO;
+
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.getDefault());
+        otherSymbols.setDecimalSeparator(decimalSeparator.charAt(0));
+        otherSymbols.setGroupingSeparator(groupingSeparator.charAt(0));
+        DecimalFormat df = new DecimalFormat(pattern, otherSymbols);
+
+        return df.format(value);
+
     }
 
 }
