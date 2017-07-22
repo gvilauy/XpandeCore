@@ -14,6 +14,17 @@ import java.util.Properties;
  */
 public final class PriceListUtils {
 
+    /***
+     * Obtiene lista de precios para una determinada organización recibida.
+     * Xpande. Created by Gabriel Vila on 7/21/17.
+     * @param ctx
+     * @param adClientID
+     * @param adOrgID
+     * @param cCurrencyID
+     * @param isSOPriceList
+     * @param trxName
+     * @return
+     */
     public static MPriceList getPriceListByOrg(Properties ctx, int adClientID, int adOrgID, int cCurrencyID, boolean isSOPriceList, String trxName) {
 
         String whereClause = X_M_PriceList.COLUMNNAME_AD_Client_ID + " =" + adClientID +
