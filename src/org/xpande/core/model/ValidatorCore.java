@@ -49,7 +49,6 @@ public class ValidatorCore implements ModelValidator {
             return modelChange((MConversionRate) po, type);
         }
 
-
         return null;
     }
 
