@@ -3,6 +3,8 @@ package org.xpande.core.model;
 import org.compiere.model.*;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
+import org.eevolution.model.X_C_TaxGroup;
+import org.xpande.core.utils.TaxUtils;
 
 import java.math.BigDecimal;
 
@@ -26,6 +28,7 @@ public class ValidatorCore implements ModelValidator {
         // DB Validations
         engine.addModelChange(I_M_Product.Table_Name, this);
         engine.addModelChange(I_C_Conversion_Rate.Table_Name, this);
+        engine.addModelChange(I_C_BPartner.Table_Name, this);
 
     }
 
@@ -47,6 +50,9 @@ public class ValidatorCore implements ModelValidator {
         }
         else if (po.get_TableName().equalsIgnoreCase(I_C_Conversion_Rate.Table_Name)){
             return modelChange((MConversionRate) po, type);
+        }
+        else if (po.get_TableName().equalsIgnoreCase(I_C_BPartner.Table_Name)){
+            return modelChange((MBPartner) po, type);
         }
 
         return null;
@@ -102,6 +108,86 @@ public class ValidatorCore implements ModelValidator {
         return mensaje;
 
     }
+
+
+    /***
+     * Validaciones para el modelo de Socio de Negocio.
+     * Xpande. Created by Gabriel Vila on 8/19/17.
+     * @param model
+     * @param type
+     * @return
+     * @throws Exception
+     */
+    public String modelChange(MBPartner model, int type) throws Exception {
+
+        String mensaje = null;
+        String sql = "", whereClause = "";
+        int contador = 0;
+
+        if ((type == ModelValidator.TYPE_BEFORE_NEW) || (type == ModelValidator.TYPE_BEFORE_CHANGE)){
+
+            // Valido codigo único de socio de negocio
+            if (model.get_ID() > 0){
+                whereClause = " and c_bpartner_id !=" + model.get_ID();
+            }
+
+            if (model.getValue() != null){
+                sql = " select count(*) from c_bpartner where lower(value) ='" + model.getValue().trim().toLowerCase() + "' " + whereClause;
+                contador = DB.getSQLValueEx(model.get_TrxName(), sql);
+                if (contador > 0){
+                    return "Ya existe un Socio de Negocio definido en el sistema con este código";
+                }
+
+                // Codigo interno sin espacios al final
+                model.setValue(model.getValue().trim());
+            }
+
+            // Me aseguro razón social y nombre fantasía de socio de negocio en mayúsculas
+            if (model.getName() != null){
+                model.setName(model.getName().toUpperCase().trim());
+            }
+
+            if (model.getName2() != null){
+                model.setName2(model.getName2().toUpperCase().trim());
+            }
+
+            // Validaciones de numero de identificación
+            if (model.getTaxID() != null){
+               model.setTaxID(model.getTaxID().trim());
+               if (!model.getTaxID().equalsIgnoreCase("")){
+
+                   // Valido Número de identificación único
+                   if (model.get_ID() > 0){
+                       sql = " select count(*) from c_bpartner where lower(taxid) ='" + model.getTaxID().toLowerCase() + "' " + whereClause;
+                       contador = DB.getSQLValueEx(model.get_TrxName(), sql);
+                       if (contador > 0){
+                           return "Ya existe un Socio de Negocio definido en el sistema con este Número de Identificación";
+                       }
+                   }
+
+                   // Valido RUT o C.I.
+                   if (model.getC_TaxGroup_ID() > 0){
+                       X_C_TaxGroup taxGroup = (X_C_TaxGroup) model.getC_TaxGroup();
+                       if (taxGroup.getValue().equalsIgnoreCase("RUT")){
+                           if (!TaxUtils.validateRUT(model.getTaxID())){
+                               return "El RUT ingresado NO es válido, no cumple con los requisitos de DGI.";
+                           }
+                       }
+                       else if (taxGroup.getValue().equalsIgnoreCase("CI")){
+                           if (!TaxUtils.validateCI(model.getTaxID())){
+                               return "La Cédula de Identidad ingresada NO es válida.";
+                           }
+                       }
+
+                   }
+               }
+            }
+        }
+
+        return mensaje;
+
+    }
+
 
     /***
      * Validaciones para el modelo de tasas de cambio.

@@ -31,4 +31,98 @@ public final class TaxUtils {
 
         return model;
     }
+
+
+    /***
+     * Metodo para validar RUT de socio de negocio.
+     * Xpande. Created by Gabriel Vila on 8/19/17.
+     * @param rut
+     * @return
+     */
+    public static boolean validateRUT(String rut){
+
+        boolean value = true;
+
+        try {
+
+            // Saco ultimo digito al RUT recibido
+            String digitoVerificadorRUT = rut.substring(rut.length()-1);
+            String rutAux = rut.substring(0, rut.length()-1);
+
+            int[] digitos = new int[rutAux.length()];
+            int factor = 2, suma = 0, modulo = 0, digitoVerificador = -1;
+
+            int total = digitos.length-1;
+
+            for (int i = total; i >= 0 ; i--) {
+                digitos[i] = Integer.parseInt("" + rutAux.charAt(i));
+                suma = suma + (digitos[i]*factor);
+                factor = factor==9 ? 2 : (factor+1);
+            }
+
+            // Calculo el modulo 11 de la suma
+            modulo = suma % 11;
+
+            digitoVerificador = 11 - modulo;
+
+            if(digitoVerificador == 11) digitoVerificador = 0;
+
+            if(digitoVerificador == 10) digitoVerificador = 1;
+
+            if (digitoVerificador != Integer.parseInt(digitoVerificadorRUT)){
+                value = false;
+            }
+
+        }
+        catch (Exception e) {
+            value = false;
+        }
+
+        return value;
+    }
+
+
+    /***
+     * Metodo para validar C.I. de socio de negocio.
+     * @param ci
+     * @return
+     */
+    public static boolean validateCI(String ci) {
+
+        if(ci.length() != 7 && ci.length() != 8){
+            return false;
+        }else{
+            try{
+                Integer.parseInt(ci);
+            }catch (NumberFormatException e){
+                return false;
+            }
+        }
+
+        int digVerificador = Integer.parseInt((ci.charAt(ci.length() - 1)) + "" ) ;
+        int[] factores;
+        if(ci.length() == 7){ // CI viejas
+            factores = new int[]{9, 8, 7, 6, 3, 4};
+        }else{
+            factores = new int[]{2, 9, 8, 7, 6, 3, 4};
+        }
+
+
+        int suma = 0;
+        for(int i=0; i<ci.length()-1; i++ ){
+            int digito = Integer.parseInt(ci.charAt(i) + "" ) ;
+            suma += digito * factores[ i ];
+        }
+
+        int resto = suma % 10;
+        int checkdigit = 10 - resto;
+
+        if(checkdigit == 10){
+            return (digVerificador == 0);
+        }else {
+            return (checkdigit == digVerificador) ;
+        }
+
+    }
+
 }
