@@ -157,12 +157,10 @@ public class ValidatorCore implements ModelValidator {
                if (!model.getTaxID().equalsIgnoreCase("")){
 
                    // Valido Número de identificación único
-                   if (model.get_ID() > 0){
-                       sql = " select count(*) from c_bpartner where lower(taxid) ='" + model.getTaxID().toLowerCase() + "' " + whereClause;
-                       contador = DB.getSQLValueEx(model.get_TrxName(), sql);
-                       if (contador > 0){
-                           return "Ya existe un Socio de Negocio definido en el sistema con este Número de Identificación";
-                       }
+                   sql = " select count(*) from c_bpartner where lower(taxid) ='" + model.getTaxID().toLowerCase() + "' " + whereClause;
+                   contador = DB.getSQLValueEx(model.get_TrxName(), sql);
+                   if (contador > 0){
+                       return "Ya existe un Socio de Negocio definido en el sistema con este Número de Identificación";
                    }
 
                    // Valido RUT o C.I.
