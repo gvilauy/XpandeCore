@@ -27,7 +27,7 @@ public class ValidatorCore implements ModelValidator {
 
         // DB Validations
         engine.addModelChange(I_M_Product.Table_Name, this);
-        engine.addModelChange(I_C_Conversion_Rate.Table_Name, this);
+        //engine.addModelChange(I_C_Conversion_Rate.Table_Name, this);
         engine.addModelChange(I_C_BPartner.Table_Name, this);
 
     }
@@ -48,9 +48,11 @@ public class ValidatorCore implements ModelValidator {
         if (po.get_TableName().equalsIgnoreCase(I_M_Product.Table_Name)){
             return modelChange((MProduct) po, type);
         }
+        /*
         else if (po.get_TableName().equalsIgnoreCase(I_C_Conversion_Rate.Table_Name)){
             return modelChange((MConversionRate) po, type);
         }
+        */
         else if (po.get_TableName().equalsIgnoreCase(I_C_BPartner.Table_Name)){
             return modelChange((MBPartner) po, type);
         }
@@ -198,6 +200,7 @@ public class ValidatorCore implements ModelValidator {
 
         String mensaje = null;
 
+        /*
         if (type == ModelValidator.TYPE_AFTER_NEW){
 
             if (!model.get_ValueAsBoolean("IsManualRecord")) return mensaje;
@@ -269,6 +272,8 @@ public class ValidatorCore implements ModelValidator {
                 conversionRate.deleteEx(true);
             }
         }
+
+        */
 
         return mensaje;
 
