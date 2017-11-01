@@ -17,10 +17,12 @@
 /** Generated Model - DO NOT CHANGE */
 package org.xpande.core.model;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.Properties;
 import org.compiere.model.*;
+import org.compiere.util.Env;
 
 /** Generated Model for Z_ActividadDocumento
  *  @author Adempiere (generated) 
@@ -31,7 +33,7 @@ public class X_Z_ActividadDocumento extends PO implements I_Z_ActividadDocumento
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171030L;
+	private static final long serialVersionUID = 20171101L;
 
     /** Standard Constructor */
     public X_Z_ActividadDocumento (Properties ctx, int Z_ActividadDocumento_ID, String trxName)
@@ -43,7 +45,7 @@ public class X_Z_ActividadDocumento extends PO implements I_Z_ActividadDocumento
 			setC_DocType_ID (0);
 			setCompletedBy (0);
 			setDateCompleted (new Timestamp( System.currentTimeMillis() ));
-			setDiferenciaTiempo (new Timestamp( System.currentTimeMillis() ));
+			setDiferenciaTiempo (Env.ZERO);
 			setDocCreatedBy (0);
 			setDocDateCreated (new Timestamp( System.currentTimeMillis() ));
 			setDocumentNoRef (null);
@@ -210,7 +212,7 @@ public class X_Z_ActividadDocumento extends PO implements I_Z_ActividadDocumento
 		@param DiferenciaTiempo 
 		Diferencia entre fechas expresada en hora-minutos-segundos
 	  */
-	public void setDiferenciaTiempo (Timestamp DiferenciaTiempo)
+	public void setDiferenciaTiempo (BigDecimal DiferenciaTiempo)
 	{
 		set_Value (COLUMNNAME_DiferenciaTiempo, DiferenciaTiempo);
 	}
@@ -218,9 +220,12 @@ public class X_Z_ActividadDocumento extends PO implements I_Z_ActividadDocumento
 	/** Get DiferenciaTiempo.
 		@return Diferencia entre fechas expresada en hora-minutos-segundos
 	  */
-	public Timestamp getDiferenciaTiempo () 
+	public BigDecimal getDiferenciaTiempo () 
 	{
-		return (Timestamp)get_Value(COLUMNNAME_DiferenciaTiempo);
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_DiferenciaTiempo);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	public I_AD_User getDocCreate() throws RuntimeException

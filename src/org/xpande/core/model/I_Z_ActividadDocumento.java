@@ -158,12 +158,12 @@ public interface I_Z_ActividadDocumento
 	/** Set DiferenciaTiempo.
 	  * Diferencia entre fechas expresada en hora-minutos-segundos
 	  */
-	public void setDiferenciaTiempo(Timestamp DiferenciaTiempo);
+	public void setDiferenciaTiempo(BigDecimal DiferenciaTiempo);
 
 	/** Get DiferenciaTiempo.
 	  * Diferencia entre fechas expresada en hora-minutos-segundos
 	  */
-	public Timestamp getDiferenciaTiempo();
+	public BigDecimal getDiferenciaTiempo();
 
     /** Column name DocCreatedBy */
     public static final String COLUMNNAME_DocCreatedBy = "DocCreatedBy";
