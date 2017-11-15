@@ -16,7 +16,7 @@ public final class CurrencyUtils {
 
 
     /***
-     * Obtiene y retorna tasa de cambio en moneda del squema contable si es recibida por parametro.
+     * Obtiene y retorna tasa de cambio en moneda del esquema contable si es recibida por parametro.
      * Xpande. Created by Gabriel Vila on 8/2/17.
      * @param ctx
      * @param adClientID
