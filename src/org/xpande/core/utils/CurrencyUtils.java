@@ -2,8 +2,10 @@ package org.xpande.core.utils;
 
 import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.*;
+import org.compiere.util.Env;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.Properties;
 
@@ -83,6 +85,64 @@ public final class CurrencyUtils {
         }
 
         return multiplyRate;
+    }
+
+
+    /***
+     * Obtiene tasa de cambio multiplicadora entre dos monedas. Si ninguna de las monedas recibidas es igual a la moneda
+     * de la compañia recibida, se calcula una tasa de cambio arbotraje.
+     * Xpande. Created by Gabriel Vila on 1/26/18.
+     * @param ctx
+     * @param adClientID
+     * @param adOrgID
+     * @param cCurrencyFrom
+     * @param cCurrencyTo
+     * @param convertType
+     * @param dateRate
+     * @param trxName
+     * @return
+     */
+    public static BigDecimal getCurrencyRate(Properties ctx, int adClientID, int adOrgID, int cCurrencyFrom, int cCurrencyTo,
+                                             int convertType, Timestamp dateRate, String trxName){
+
+        BigDecimal currencyRate = null;
+
+        try{
+
+            // Si ambas monedas son iguales, la tasa de cambio es uno.
+            if (cCurrencyFrom == cCurrencyTo) return Env.ONE;
+
+            MAcctSchema schema = MClient.get(ctx, adClientID).getAcctSchema();
+
+            // Si alguna de las monedas recibidas es igual a la moneda de la compañia
+            if ((cCurrencyFrom == schema.getC_Currency_ID()) || (cCurrencyTo == schema.getC_Currency_ID())){
+                // Retorno tasa de cambio según calculo para moneda de la compañia.
+                return CurrencyUtils.getCurrencyRateToAcctSchemaCurrency(ctx, adClientID, adOrgID, cCurrencyFrom, cCurrencyTo, convertType, dateRate, trxName);
+            }
+
+            // Ambas monedas son distintas a la moneda de la compañia, tengo que obtener un arbitraje de conversión desde moneda origen a moneda destino.
+
+            // Obtengo tasa de cambio desde moneda origen a moneda de la compañia
+            BigDecimal rateFrom = CurrencyUtils.getCurrencyRateToAcctSchemaCurrency(ctx, adClientID, adOrgID, cCurrencyFrom, schema.getC_Currency_ID(), convertType, dateRate, trxName);
+
+            // Obtengo tasa de cambio desde moneda destino a moneda de la compañia
+            BigDecimal rateTo = CurrencyUtils.getCurrencyRateToAcctSchemaCurrency(ctx, adClientID, adOrgID, cCurrencyTo, schema.getC_Currency_ID(), convertType, dateRate, trxName);
+
+            if (rateTo == null) rateTo = Env.ZERO;
+            if (rateFrom == null) rateFrom = Env.ZERO;
+
+            if (rateFrom.compareTo(Env.ZERO) <= 0){
+                return currencyRate;
+            }
+
+            currencyRate = rateTo.divide(rateFrom, 6, RoundingMode.HALF_UP);
+
+        }
+        catch (Exception e){
+            throw new AdempiereException(e);
+        }
+
+        return currencyRate;
     }
 
 }
