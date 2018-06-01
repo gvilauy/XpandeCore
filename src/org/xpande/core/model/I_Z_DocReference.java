@@ -163,6 +163,19 @@ public interface I_Z_DocReference
 	  */
 	public int getRecord_ID();
 
+    /** Column name TotalAmt */
+    public static final String COLUMNNAME_TotalAmt = "TotalAmt";
+
+	/** Set Total Amount.
+	  * Total Amount
+	  */
+	public void setTotalAmt(BigDecimal TotalAmt);
+
+	/** Get Total Amount.
+	  * Total Amount
+	  */
+	public BigDecimal getTotalAmt();
+
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
 

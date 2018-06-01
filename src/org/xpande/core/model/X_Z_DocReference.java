@@ -17,9 +17,11 @@
 /** Generated Model - DO NOT CHANGE */
 package org.xpande.core.model;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Properties;
 import org.compiere.model.*;
+import org.compiere.util.Env;
 
 /** Generated Model for Z_DocReference
  *  @author Adempiere (generated) 
@@ -30,7 +32,7 @@ public class X_Z_DocReference extends PO implements I_Z_DocReference, I_Persiste
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20171027L;
+	private static final long serialVersionUID = 20180530L;
 
     /** Standard Constructor */
     public X_Z_DocReference (Properties ctx, int Z_DocReference_ID, String trxName)
@@ -194,6 +196,26 @@ public class X_Z_DocReference extends PO implements I_Z_DocReference, I_Persiste
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Total Amount.
+		@param TotalAmt 
+		Total Amount
+	  */
+	public void setTotalAmt (BigDecimal TotalAmt)
+	{
+		set_Value (COLUMNNAME_TotalAmt, TotalAmt);
+	}
+
+	/** Get Total Amount.
+		@return Total Amount
+	  */
+	public BigDecimal getTotalAmt () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_TotalAmt);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Z_DocReference ID.
