@@ -99,6 +99,11 @@ public class ValidatorCore implements ModelValidator {
             if (model.getDescription() != null){
                 model.setDescription(model.getDescription().toUpperCase().trim());
             }
+
+            // Me aseguro organizacion * para el producto
+            if (model.getAD_Org_ID() > 0){
+                model.setAD_Org_ID(0);
+            }
         }
 
         return mensaje;
@@ -145,6 +150,11 @@ public class ValidatorCore implements ModelValidator {
 
             if (model.getName2() != null){
                 model.setName2(model.getName2().toUpperCase().trim());
+            }
+
+            // Me aseguro organizacion * para el producto
+            if (model.getAD_Org_ID() > 0){
+                model.setAD_Org_ID(0);
             }
 
             // Validaciones de numero de identificación
