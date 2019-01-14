@@ -1,5 +1,8 @@
 package org.xpande.core.utils;
 
+import org.adempiere.exceptions.AdempiereException;
+
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -50,4 +53,41 @@ public final class DateUtils {
             return null;
         }
     }
+
+
+    /***
+     * Recibe un fecha TimeStamp y le setea la hora recibida.
+     * Xpande. Created by Gabriel Vila on 1/14/19.
+     * @param fechaTS
+     * @param hour
+     * @param minutes
+     * @param seconds
+     * @param milliseconds
+     * @return
+     */
+    public static Timestamp getTSManualHour(Timestamp fechaTS, int hour, int minutes, int seconds, int milliseconds){
+
+        Timestamp fechaHoraTS = fechaTS;
+
+        try{
+
+            Time time = new Time(System.currentTimeMillis());
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(time.getTime());
+            cal.set(Calendar.HOUR_OF_DAY, hour);
+            cal.set(Calendar.MINUTE, minutes);
+            cal.set(Calendar.SECOND, seconds);
+            cal.set(Calendar.MILLISECOND, milliseconds);
+
+            fechaHoraTS.setTime(cal.getTimeInMillis());
+        }
+        catch (Exception e){
+            throw new AdempiereException(e);
+        }
+
+        return fechaHoraTS;
+    }
+
+
 }
