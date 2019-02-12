@@ -71,7 +71,8 @@ public final class DateUtils {
 
         try{
 
-            Time time = new Time(System.currentTimeMillis());
+            //Time time = new Time(System.currentTimeMillis());
+            Time time = new Time(fechaTS.getTime());
 
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(time.getTime());
@@ -89,5 +90,37 @@ public final class DateUtils {
         return fechaHoraTS;
     }
 
+
+    /***
+     * Convierte fecha en formato String: YYYYMMssHHmmss a TimeStamp.
+     * Xpande. Created by Gabriel Vila on 2/11/19.
+     * @param str_date
+     * @return
+     */
+    public static Timestamp convertStringToTimestamp_YYYYMMddHHMMss(String str_date){
+
+        Timestamp value = null;
+
+        try{
+
+            if (str_date.length() == 14){
+
+                String anio = str_date.substring(0, 4);
+                String mes = str_date.substring(4,6);
+                String dia = str_date.substring(6,8);
+                String hra = str_date.substring(8,10);
+                String min = str_date.substring(10,12);
+                String seg = str_date.substring(12,14);
+
+               value = Timestamp.valueOf(anio + "-" + mes + "-" + dia + " " + hra + ":" + min + ":" + seg);
+            }
+
+        }
+        catch (Exception e){
+            throw new AdempiereException(e);
+        }
+
+        return value;
+    }
 
 }
