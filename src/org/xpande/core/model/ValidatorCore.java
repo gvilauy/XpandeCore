@@ -157,6 +157,13 @@ public class ValidatorCore implements ModelValidator {
                 model.setAD_Org_ID(0);
             }
 
+            // Si es cliente, tiene que tener número de indentificación.
+            if (model.isCustomer()){
+                if (model.getTaxID() == null){
+                    return "Debe indicar Número de Identificación cuando el socio de negocio esta marcado como Cliente";
+                }
+            }
+
             // Validaciones de numero de identificación
             if (model.getTaxID() != null){
                model.setTaxID(model.getTaxID().trim());
