@@ -34,6 +34,25 @@ public final class TaxUtils {
 
 
     /***
+     * Obtiene y retorna impuesto por defecto asociado a una determinada categoria de impuesto recibido.
+     * Xpande. Created by Gabriel Vila on 4/22/19.
+     * @param ctx
+     * @param cTaxCategoryID
+     * @param trxName
+     * @return
+     */
+    public static MTax getDefaultTaxByCategory(Properties ctx, int cTaxCategoryID, String trxName){
+
+        String whereClause = X_C_Tax.COLUMNNAME_C_TaxCategory_ID + " =" + cTaxCategoryID +
+                " AND " + X_C_Tax.COLUMNNAME_IsDefault + " ='Y' ";
+
+        MTax model = new Query(ctx, I_C_Tax.Table_Name, whereClause, trxName).setOnlyActiveRecords(true).setOrderBy(" Created Desc ").first();
+
+        return model;
+    }
+
+
+    /***
      * Metodo para validar RUT de socio de negocio.
      * Xpande. Created by Gabriel Vila on 8/19/17.
      * @param rut
