@@ -22,15 +22,23 @@ public final class PriceListUtils {
      * @param adOrgID
      * @param cCurrencyID
      * @param isSOPriceList
+     * @param valueListaEspcial
      * @param trxName
      * @return
      */
-    public static MPriceList getPriceListByOrg(Properties ctx, int adClientID, int adOrgID, int cCurrencyID, boolean isSOPriceList, String trxName) {
+    public static MPriceList getPriceListByOrg(Properties ctx, int adClientID, int adOrgID, int cCurrencyID, boolean isSOPriceList,
+                                               String valueListaEspcial, String trxName) {
 
         String whereClause = X_M_PriceList.COLUMNNAME_AD_Client_ID + " =" + adClientID +
                 " AND " + X_M_PriceList.COLUMNNAME_AD_Org_ID + " =" + adOrgID +
                 " AND " + X_M_PriceList.COLUMNNAME_C_Currency_ID + " =" + cCurrencyID +
                 " AND " + X_M_PriceList.COLUMNNAME_IsSOPriceList + " ='" + ((isSOPriceList) ? 'Y':'N') + "'";
+
+        if ((valueListaEspcial != null) && (!valueListaEspcial.trim().equalsIgnoreCase(""))){
+            whereClause += " AND " + X_M_PriceList.COLUMNNAME_M_PriceList_ID + " IN " +
+                    " (select max(m_pricelist_id) as m_pricelist_id from z_comconfigplistesp " +
+                    " where lower(value) ='" + valueListaEspcial.toLowerCase().trim() + "' and isactive='Y') ";
+        }
 
         MPriceList model = new Query(ctx, I_M_PriceList.Table_Name, whereClause, trxName).setOnlyActiveRecords(true).first();
 
