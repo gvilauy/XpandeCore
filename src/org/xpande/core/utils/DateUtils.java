@@ -123,4 +123,28 @@ public final class DateUtils {
         return value;
     }
 
+    public static boolean isInRange(Timestamp dateSource, Timestamp startDate, Timestamp endDate){
+
+        boolean value = false;
+
+        try{
+            if (dateSource.equals(startDate)){
+                return true;
+            }
+
+            if (dateSource.equals(endDate)){
+                return true;
+            }
+
+            if (dateSource.after(startDate) && dateSource.before(endDate)){
+                return true;
+            }
+        }
+        catch (Exception e){
+            throw new AdempiereException(e);
+        }
+
+        return value;
+    }
+
 }
