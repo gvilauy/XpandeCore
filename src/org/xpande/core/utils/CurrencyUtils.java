@@ -90,7 +90,7 @@ public final class CurrencyUtils {
 
     /***
      * Obtiene tasa de cambio multiplicadora entre dos monedas. Si ninguna de las monedas recibidas es igual a la moneda
-     * de la compañia recibida, se calcula una tasa de cambio arbotraje.
+     * de la compañia recibida, se calcula una tasa de cambio arbitraje.
      * Xpande. Created by Gabriel Vila on 1/26/18.
      * @param ctx
      * @param adClientID
