@@ -28,6 +28,7 @@ public class ValidatorCore implements ModelValidator {
         // DB Validations
         engine.addModelChange(I_M_Product.Table_Name, this);
         engine.addModelChange(I_C_BPartner.Table_Name, this);
+        engine.addModelChange(I_C_City.Table_Name, this);
 
     }
 
@@ -49,6 +50,9 @@ public class ValidatorCore implements ModelValidator {
         }
         else if (po.get_TableName().equalsIgnoreCase(I_C_BPartner.Table_Name)){
             return modelChange((MBPartner) po, type);
+        }
+        else if (po.get_TableName().equalsIgnoreCase(I_C_City.Table_Name)){
+            return modelChange((MCity) po, type);
         }
 
         return null;
@@ -110,6 +114,36 @@ public class ValidatorCore implements ModelValidator {
 
     }
 
+    /***
+     * Validaciones para el modelo de Ciudades.
+     * Xpande. Created by Gabriel Vila on 11/6/19.
+     * @param model
+     * @param type
+     * @return
+     * @throws Exception
+     */
+    public String modelChange(MCity model, int type) throws Exception {
+
+        String mensaje = null;
+        String sql = "", whereClause = "";
+        int contador = 0;
+
+        if ((type == ModelValidator.TYPE_BEFORE_NEW) || (type == ModelValidator.TYPE_BEFORE_CHANGE)){
+
+            // Me aseguro nombre y descripcion de producto en mayúsculas
+            if (model.getName() != null){
+                model.setName(model.getName().toUpperCase().trim());
+            }
+
+            // Me aseguro organizacion * para la ciudad
+            if (model.getAD_Org_ID() > 0){
+                model.setAD_Org_ID(0);
+            }
+        }
+
+        return mensaje;
+
+    }
 
     /***
      * Validaciones para el modelo de Socio de Negocio.
