@@ -78,6 +78,29 @@ public final class DateUtils {
     }
 
     /***
+     * Convierte string en formato MM/dd/yyyy a Timestamp
+     * Xpande. Created by Gabriel Vila on 11/26/19.
+     * @param str_date
+     * @param separador
+     * @return
+     */
+    public static Timestamp convertStringToTimestamp_MMddyyyy(String str_date, String separador) {
+
+        try {
+            DateFormat formatter;
+            formatter = new SimpleDateFormat("MM" + separador + "dd" + separador + "yyyy");
+            Date date = formatter.parse(str_date);
+            java.sql.Timestamp timeStampDate = new Timestamp(date.getTime());
+
+            return timeStampDate;
+
+        } catch (ParseException e) {
+            System.out.println("Exception :" + e);
+            return null;
+        }
+    }
+
+    /***
      * Convierte string en formato yyyy-MM-dd a Timestamp
      * Xpande. Created by Gabriel Vila on 11/20/19.
      * @param str_date
