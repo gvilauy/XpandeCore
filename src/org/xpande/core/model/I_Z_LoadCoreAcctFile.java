@@ -104,6 +104,21 @@ public interface I_Z_LoadCoreAcctFile
 
 	public I_C_Currency getC_Currency() throws RuntimeException;
 
+    /** Column name C_ElementValue_ID */
+    public static final String COLUMNNAME_C_ElementValue_ID = "C_ElementValue_ID";
+
+	/** Set Account Element.
+	  * Account Element
+	  */
+	public void setC_ElementValue_ID (int C_ElementValue_ID);
+
+	/** Get Account Element.
+	  * Account Element
+	  */
+	public int getC_ElementValue_ID();
+
+	public I_C_ElementValue getC_ElementValue() throws RuntimeException;
+
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
 
@@ -302,6 +317,19 @@ public interface I_Z_LoadCoreAcctFile
 	  * Alphanumeric identifier of the entity
 	  */
 	public String getName();
+
+    /** Column name Parent_ID */
+    public static final String COLUMNNAME_Parent_ID = "Parent_ID";
+
+	/** Set Parent.
+	  * Parent of Entity
+	  */
+	public void setParent_ID (int Parent_ID);
+
+	/** Get Parent.
+	  * Parent of Entity
+	  */
+	public int getParent_ID();
 
     /** Column name ParentValue */
     public static final String COLUMNNAME_ParentValue = "ParentValue";

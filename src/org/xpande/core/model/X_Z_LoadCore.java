@@ -114,6 +114,34 @@ public class X_Z_LoadCore extends PO implements I_Z_LoadCore, I_Persistent
 		return ii.intValue();
 	}
 
+	public I_C_Element getC_Element() throws RuntimeException
+    {
+		return (I_C_Element)MTable.get(getCtx(), I_C_Element.Table_Name)
+			.getPO(getC_Element_ID(), get_TrxName());	}
+
+	/** Set Element.
+		@param C_Element_ID 
+		Accounting Element
+	  */
+	public void setC_Element_ID (int C_Element_ID)
+	{
+		if (C_Element_ID < 1) 
+			set_Value (COLUMNNAME_C_Element_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_Element_ID, Integer.valueOf(C_Element_ID));
+	}
+
+	/** Get Element.
+		@return Accounting Element
+	  */
+	public int getC_Element_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Element_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Document Date.
 		@param DateDoc 
 		Date of the Document

@@ -250,6 +250,13 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 		}
 		// Carga de Plan de Cuentas
 		else if (this.getTipoLoadCore().equalsIgnoreCase(X_Z_LoadCore.TIPOLOADCORE_PLANDECUENTAS)){
+
+			// Valido que se haya seleccionado un elemento contable para el plan de cuentas
+			if (this.getC_Element_ID() <= 0){
+				m_processMsg = "Debe indicar Elemento Contable a cosniderar.";
+				return DocAction.STATUS_Invalid;
+			}
+
 			this.generatePlanCuentas();
 		}
 
@@ -933,7 +940,17 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 	 */
 	private void generatePlanCuentas(){
 
+		int contador = 0;
+		String action = "";
+
 		try{
+
+			// No hago nada si no hay elemento contable seleccionado
+			if (this.getC_Element_ID() <= 0){
+				return;
+			}
+
+			MElement element = (MElement) this.getC_Element();
 
 			List<MZLoadCoreAcctFile> loadCoreAcctFileList = this.getAccountLines();
 			for (MZLoadCoreAcctFile loadCoreAcctFile: loadCoreAcctFileList){
@@ -943,9 +960,77 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 					continue;
 				}
 
+				// Genero modelo para cuenta contable
+				MElementValue elementValue = new MElementValue(getCtx(), 0, get_TrxName());
+				elementValue.setAD_Org_ID(0);
+				elementValue.setAccountSign(X_C_ElementValue.ACCOUNTSIGN_Natural);
+				elementValue.setAccountType(loadCoreAcctFile.getAccountType());
+				elementValue.setC_Element_ID(this.getC_Element_ID());
+				elementValue.setIsDocControlled(loadCoreAcctFile.isDocControlled());
+				elementValue.setIsSummary(loadCoreAcctFile.isSummary());
+				elementValue.setValue(loadCoreAcctFile.getValue());
+				elementValue.setName(loadCoreAcctFile.getName());
+				elementValue.setPostActual(true);
+				elementValue.setPostBudget(false);
+				elementValue.setPostEncumbrance(false);
+				elementValue.setPostStatistical(false);
+				elementValue.setIsForeignCurrency(loadCoreAcctFile.isForeignCurrency());
 
+				if (loadCoreAcctFile.getC_Currency_ID() > 0){
+					elementValue.setC_Currency_ID(loadCoreAcctFile.getC_Currency_ID());
+				}
+
+				elementValue.set_ValueOfColumn("IsTaxAccount", loadCoreAcctFile.isTaxAccount());
+				elementValue.set_ValueOfColumn("IsRetencionAcct", loadCoreAcctFile.isRetencionAcct());
+				elementValue.set_ValueOfColumn("IsPartnerRequired", loadCoreAcctFile.isPartnerRequired());
+				elementValue.set_ValueOfColumn("IsAcctCierreBP", loadCoreAcctFile.isAcctCierreBP());
+
+				elementValue.saveEx();
+
+				// Actualizo ID de cuenta en tabla de carga
+				loadCoreAcctFile.setC_ElementValue_ID(elementValue.get_ID());
+				loadCoreAcctFile.saveEx();
+
+				contador++;
 			}
 
+			// Si cargue cuentas
+			if (contador > 0){
+
+				// Actualizo ID de cuenta padre en tabla de carga
+				action = " update Z_LoadCoreAcctFile set parent_id = ev.c_elementvalue_id " +
+						" from c_elementvalue ev " +
+						" where Z_LoadCoreAcctFile.parentvalue = ev.value " +
+						" and ev.c_element_id =" + element.get_ID() +
+						" and Z_LoadCoreAcctFile.z_loadcore_id =" + this.get_ID();
+
+				DB.executeUpdateEx(action, get_TrxName());
+
+				// Actualizo ID en 0 para cuentas que no tienen padre
+				action = " update Z_LoadCoreAcctFile set parent_id = 0 " +
+						" where z_loadcore_id =" + this.get_ID() +
+						" and parent_id is null " +
+						" and isconfirmed ='Y' ";
+				DB.executeUpdateEx(action, get_TrxName());
+
+				// Si el elemento comtable tiene arbol asociado
+				if (element.getAD_Tree_ID() > 0){
+
+					// Borro nodos del arbol asociado al elemento contable
+					action = " delete from ad_treenode cascade where ad_tree_id =" + element.getAD_Tree_ID();
+					DB.executeUpdateEx(action, get_TrxName());
+
+					// Inserto nuevos nodos en árbol
+					action = " insert into ad_treenode " +
+							" (ad_client_id, ad_org_id, isactive, created, createdby, updated, updatedby, ad_tree_id, node_id, parent_id, seqno) " +
+							" select ad_client_id, 0, isactive, created, createdby, updated, updatedby, " +
+							element.getAD_Tree_ID() + ", c_elementvalue_id, parent_id, (c_elementvalue_id - 999999)*10 " +
+							" from Z_LoadCoreAcctFile " +
+							" where z_loadcore_id =" + this.get_ID() +
+							" and isconfirmed ='Y' ";
+					DB.executeUpdateEx(action, get_TrxName());
+				}
+			}
 		}
 		catch (Exception e){
 			throw new AdempiereException(e);

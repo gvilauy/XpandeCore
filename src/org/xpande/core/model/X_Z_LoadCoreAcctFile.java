@@ -174,6 +174,34 @@ public class X_Z_LoadCoreAcctFile extends PO implements I_Z_LoadCoreAcctFile, I_
 		return ii.intValue();
 	}
 
+	public I_C_ElementValue getC_ElementValue() throws RuntimeException
+    {
+		return (I_C_ElementValue)MTable.get(getCtx(), I_C_ElementValue.Table_Name)
+			.getPO(getC_ElementValue_ID(), get_TrxName());	}
+
+	/** Set Account Element.
+		@param C_ElementValue_ID 
+		Account Element
+	  */
+	public void setC_ElementValue_ID (int C_ElementValue_ID)
+	{
+		if (C_ElementValue_ID < 1) 
+			set_Value (COLUMNNAME_C_ElementValue_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_ElementValue_ID, Integer.valueOf(C_ElementValue_ID));
+	}
+
+	/** Get Account Element.
+		@return Account Element
+	  */
+	public int getC_ElementValue_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_ElementValue_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set Error Msg.
 		@param ErrorMsg Error Msg	  */
 	public void setErrorMsg (String ErrorMsg)
@@ -474,6 +502,29 @@ public class X_Z_LoadCoreAcctFile extends PO implements I_Z_LoadCoreAcctFile, I_
 	public String getName () 
 	{
 		return (String)get_Value(COLUMNNAME_Name);
+	}
+
+	/** Set Parent.
+		@param Parent_ID 
+		Parent of Entity
+	  */
+	public void setParent_ID (int Parent_ID)
+	{
+		if (Parent_ID < 1) 
+			set_Value (COLUMNNAME_Parent_ID, null);
+		else 
+			set_Value (COLUMNNAME_Parent_ID, Integer.valueOf(Parent_ID));
+	}
+
+	/** Get Parent.
+		@return Parent of Entity
+	  */
+	public int getParent_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Parent_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Parent Key.
