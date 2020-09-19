@@ -31,7 +31,7 @@ public class X_Z_LoadCore extends PO implements I_Z_LoadCore, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200723L;
+	private static final long serialVersionUID = 20200919L;
 
     /** Standard Constructor */
     public X_Z_LoadCore (Properties ctx, int Z_LoadCore_ID, String trxName)
@@ -414,12 +414,14 @@ public class X_Z_LoadCore extends PO implements I_Z_LoadCore, I_Persistent
 		return ii.intValue();
 	}
 
-	/** TipoLoadCore AD_Reference_ID=1000062 */
-	public static final int TIPOLOADCORE_AD_Reference_ID=1000062;
-	/** SOCIOS DE NEGOCIO = PARTNER */
-	public static final String TIPOLOADCORE_SOCIOSDENEGOCIO = "PARTNER";
+	/** TipoLoadCore AD_Reference_ID=1000057 */
+	public static final int TIPOLOADCORE_AD_Reference_ID=1000057;
 	/** PRODUCTOS = PRODUCT */
 	public static final String TIPOLOADCORE_PRODUCTOS = "PRODUCT";
+	/** SOCIOS DE NEGOCIO = PARTNER */
+	public static final String TIPOLOADCORE_SOCIOSDENEGOCIO = "PARTNER";
+	/** PLAN DE CUENTAS = ACCOUNT */
+	public static final String TIPOLOADCORE_PLANDECUENTAS = "ACCOUNT";
 	/** Set TipoLoadCore.
 		@param TipoLoadCore 
 		Lista de valores para tipos de datos básicos a cargar en el sistema

@@ -31,7 +31,7 @@ public interface I_Z_LoadCore
     /** TableName=Z_LoadCore */
     public static final String Table_Name = "Z_LoadCore";
 
-    /** AD_Table_ID=1000362 */
+    /** AD_Table_ID=1000269 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);

@@ -75,8 +75,8 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 		}
 		else if (docStatus.equalsIgnoreCase(STATUS_Completed)){
 
-			//options[newIndex++] = DocumentEngine.ACTION_None;
-			options[newIndex++] = DocumentEngine.ACTION_ReActivate;
+			options[newIndex++] = DocumentEngine.ACTION_None;
+			//options[newIndex++] = DocumentEngine.ACTION_ReActivate;
 			//options[newIndex++] = DocumentEngine.ACTION_Void;
 		}
 
@@ -248,6 +248,10 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 		if (this.getTipoLoadCore().equalsIgnoreCase(X_Z_LoadCore.TIPOLOADCORE_SOCIOSDENEGOCIO)){
 			this.generatePartners();
 		}
+		// Carga de Plan de Cuentas
+		else if (this.getTipoLoadCore().equalsIgnoreCase(X_Z_LoadCore.TIPOLOADCORE_PLANDECUENTAS)){
+			this.generatePlanCuentas();
+		}
 
 		//	User Validation
 		String valid = ModelValidationEngine.get().fireDocValidate(this, ModelValidator.TIMING_AFTER_COMPLETE);
@@ -418,11 +422,17 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 			// Elimino información anterior.
 			this.deleteFileData();
 
+			// Ejecuta según tipo de carga seleccionado en este proceso
 			// Lee lineas de archivo
-			this.getDataFromFile();
-
 			// Valida lineas de archivo y trae información asociada.
-			this.setDataFromFile();
+			if (this.getTipoLoadCore().equalsIgnoreCase(X_Z_LoadCore.TIPOLOADCORE_SOCIOSDENEGOCIO)){
+				this.getPartnerDataFromFile();
+				this.setPartnerDataFromFile();
+			}
+			else if (this.getTipoLoadCore().equalsIgnoreCase(X_Z_LoadCore.TIPOLOADCORE_PLANDECUENTAS)){
+				this.getAccountDataFromFile();
+				this.setAccountDataFromFile();
+			}
 
 		}
 		catch (Exception e){
@@ -443,6 +453,11 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 			action = " delete from " + I_Z_LoadCoreBPFile.Table_Name +
 					" where " + X_Z_LoadCoreBPFile.COLUMNNAME_Z_LoadCore_ID + " =" + this.get_ID();
 			DB.executeUpdateEx(action, get_TrxName());
+
+			action = " delete from " + I_Z_LoadCoreAcctFile.Table_Name +
+					" where " + X_Z_LoadCoreBPFile.COLUMNNAME_Z_LoadCore_ID + " =" + this.get_ID();
+			DB.executeUpdateEx(action, get_TrxName());
+
 		}
 		catch (Exception e){
 			throw new AdempiereException(e);
@@ -450,10 +465,10 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 	}
 
 	/***
-	 * Proceso que lee archivo de interface.
+	 * Proceso que lee archivo de interface para carga de Socios de Negocio.
 	 * Xpande. Created by Gabriel Vila on 7/23/20.
 	 */
-	public void getDataFromFile() {
+	public void getPartnerDataFromFile() {
 
 		FileReader fReader = null;
 		BufferedReader bReader = null;
@@ -530,10 +545,10 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 	}
 
 	/***
-	 * Valida lineas leídas desde archivo y carga información asociada.
+	 * Valida lineas leídas desde archivo y carga información asociada para Socios de Negocio.
 	 * Xpande. Created by Gabriel Vila on 7/23/20.
 	 */
-	private void setDataFromFile() {
+	private void setPartnerDataFromFile() {
 
 		String sql = "";
 
@@ -638,7 +653,191 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 	}
 
 	/***
-	 * Obtiene y retorna lineas de este documento.
+	 * Proceso que lee archivo de interface para carga de Plan de Cuentas.
+	 * Xpande. Created by Gabriel Vila on 9/19/20.
+	 */
+	public void getAccountDataFromFile() {
+
+		FileReader fReader = null;
+		BufferedReader bReader = null;
+
+		String lineaArchivo = null;
+		String action = "";
+
+		try{
+			// Formato de importación de archivo de interface
+			ImpFormat formatoImpArchivo = ImpFormat.load("Core_Load_PlanCuentas");
+
+			// Abro archivo
+			File archivo = new File(this.getFileName());
+			fReader = new FileReader(archivo);
+			bReader = new BufferedReader(fReader);
+
+			int contLineas = 0;
+			int lineaID = 0;
+
+			// Leo lineas del archivo
+			lineaArchivo = bReader.readLine();
+
+			while (lineaArchivo != null) {
+
+				lineaArchivo = lineaArchivo.replace("'", "");
+				contLineas++;
+
+				lineaID = formatoImpArchivo.updateDB(lineaArchivo, getCtx(), get_TrxName());
+
+				if (lineaID <= 0){
+					MZLoadCoreAcctFile loadCoreAcctFile = new MZLoadCoreAcctFile(getCtx(), 0, get_TrxName());
+					loadCoreAcctFile.setZ_LoadCore_ID(this.get_ID());
+					loadCoreAcctFile.setLineNumber(contLineas);
+					loadCoreAcctFile.setFileLineText(lineaArchivo);
+					loadCoreAcctFile.setIsConfirmed(false);
+					loadCoreAcctFile.setErrorMsg("Formato de Linea Incorrecto.");
+					loadCoreAcctFile.saveEx();
+				}
+				else{
+					// Seteo atributos de linea procesada en tabla
+					action = " update " + I_Z_LoadCoreAcctFile.Table_Name +
+							" set " + X_Z_LoadCoreAcctFile.COLUMNNAME_Z_LoadCore_ID + " = " + this.get_ID() + ", " +
+							" LineNumber =" + contLineas + ", " +
+							" FileLineText ='" + lineaArchivo + "' " +
+							" where " + X_Z_LoadCoreAcctFile.COLUMNNAME_Z_LoadCoreAcctFile_ID + " = " + lineaID;
+					DB.executeUpdateEx(action, get_TrxName());
+				}
+				lineaArchivo = bReader.readLine();
+			}
+
+			this.setQtyCount(contLineas);
+			this.saveEx();
+
+		}
+		catch (Exception e){
+			throw new AdempiereException(e);
+		}
+		finally {
+			if (bReader != null){
+				try{
+					bReader.close();
+					if (fReader != null){
+						fReader.close();
+					}
+				}
+				catch (Exception e){
+					log.log(Level.SEVERE, e.getMessage());
+				}
+			}
+		}
+	}
+
+	/***
+	 * Valida lineas leídas desde archivo y carga información asociada para Plan de Cuentas.
+	 * Xpande. Created by Gabriel Vila on 9/19/20.
+	 */
+	private void setAccountDataFromFile() {
+
+		String sql = "";
+
+		try{
+			int contadorOK = 0;
+			int contadorError = 0;
+
+			List<MZLoadCoreAcctFile> loadCoreAcctFileList = this.getAccountLines();
+			for (MZLoadCoreAcctFile loadCoreAcctFile : loadCoreAcctFileList){
+
+				if (loadCoreAcctFile.getErrorMsg() != null){
+					contadorError++;
+					continue;
+				}
+
+				loadCoreAcctFile.setIsConfirmed(true);
+				loadCoreAcctFile.setAD_Org_ID(this.getAD_Org_ID());
+
+				// Cuenta Padre
+				if ((loadCoreAcctFile.getParentValue() != null) && (!loadCoreAcctFile.getParentValue().trim().equalsIgnoreCase(""))){
+
+					// Si la cuenta padre es distinta de CERO, debo validar que exista una cuenta con este codigo
+					if (!loadCoreAcctFile.getParentValue().trim().equalsIgnoreCase("0")){
+						// Verifico si existe una cuenta con este código en esta carga de archivo
+						sql = " select count(*) from z_loadcoreacctfile where value ='" + loadCoreAcctFile.getParentValue() + "'";
+						int contador = DB.getSQLValueEx(null, sql);
+						if (contador <= 0){
+							loadCoreAcctFile.setIsConfirmed(false);
+							loadCoreAcctFile.setErrorMsg("No existe cuenta padre con código: " + loadCoreAcctFile.getParentValue());
+						}
+					}
+				}
+				else{
+					loadCoreAcctFile.setIsConfirmed(false);
+					loadCoreAcctFile.setErrorMsg("Falta indicar Cuenta Padre");
+				}
+
+				// Codigo interno
+				if (loadCoreAcctFile.isConfirmed()){
+					if ((loadCoreAcctFile.getValue() == null) || (loadCoreAcctFile.getValue().trim().equalsIgnoreCase(""))){
+						loadCoreAcctFile.setIsConfirmed(false);
+						loadCoreAcctFile.setErrorMsg("Falta indicar Código de Cuenta");
+					}
+					else{
+						// Verifico codigo de cuenta unicó
+						sql = " select count(*) from z_loadcoreacctfile where value ='" + loadCoreAcctFile.getValue() + "'";
+						int contador = DB.getSQLValueEx(null, sql);
+						if (contador > 1){
+							loadCoreAcctFile.setIsConfirmed(false);
+							loadCoreAcctFile.setErrorMsg("Código de cuenta repetido: " + loadCoreAcctFile.getValue());
+						}
+					}
+				}
+
+				// Nombre
+				if (loadCoreAcctFile.isConfirmed()){
+					if ((loadCoreAcctFile.getName() == null) || (loadCoreAcctFile.getName().trim().equalsIgnoreCase(""))){
+						loadCoreAcctFile.setIsConfirmed(false);
+						loadCoreAcctFile.setErrorMsg("Falta indicar Nombre de Cuenta");
+					}
+					else{
+						// Verifico nombre de cuenta unicó
+						sql = " select count(*) from z_loadcoreacctfile where lower(name) ='" + loadCoreAcctFile.getName().toLowerCase() + "'";
+						int contador = DB.getSQLValueEx(null, sql);
+						if (contador > 1){
+							loadCoreAcctFile.setIsConfirmed(false);
+							loadCoreAcctFile.setErrorMsg("Nombre de cuenta repetido: " + loadCoreAcctFile.getName());
+						}
+					}
+				}
+
+				// Si cuenta marcada como moneda extranjera verifico moneda extranjera
+				if (loadCoreAcctFile.isConfirmed()){
+					if (loadCoreAcctFile.isForeignCurrency()){
+						if (loadCoreAcctFile.getC_Currency_ID() <= 0){
+							loadCoreAcctFile.setIsConfirmed(false);
+							loadCoreAcctFile.setErrorMsg("Falta indicar Moneda Extranjera");
+						}
+					}
+				}
+
+				if (loadCoreAcctFile.isConfirmed()){
+					contadorOK++;
+				}
+				else{
+					contadorError++;
+				}
+
+				loadCoreAcctFile.saveEx();
+			}
+
+			this.setQty(contadorOK);
+			this.setQtyReject(contadorError);
+			this.saveEx();
+
+		}
+		catch (Exception e){
+			throw new AdempiereException(e);
+		}
+	}
+
+
+	/***
+	 * Obtiene y retorna lineas de carga de socios de negocios de este documento.
 	 * Xpande. Created by Gabriel Vila on 7/23/20.
 	 * @return
 	 */
@@ -650,6 +849,21 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 
 		return lines;
 	}
+
+	/***
+	 * Obtiene y retorna lineas de carga de Plan de Cuentas.
+	 * Xpande. Created by Gabriel Vila on 9/19/20.
+	 * @return
+	 */
+	public List<MZLoadCoreAcctFile> getAccountLines(){
+
+		String whereClause = X_Z_LoadCoreAcctFile.COLUMNNAME_Z_LoadCore_ID + " =" + this.get_ID();
+
+		List<MZLoadCoreAcctFile> lines = new Query(getCtx(), I_Z_LoadCoreAcctFile.Table_Name, whereClause, get_TrxName()).list();
+
+		return lines;
+	}
+
 
 	/***
 	 * Crea nuevos socios de negocio en el sistema.
@@ -709,6 +923,32 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 		}
 		catch (Exception e){
 		    throw new AdempiereException(e);
+		}
+	}
+
+
+	/***
+	 * Carga plan de cuentas en el sistema.
+	 * Xpande. Created by Gabriel Vila on 9/19/20.
+	 */
+	private void generatePlanCuentas(){
+
+		try{
+
+			List<MZLoadCoreAcctFile> loadCoreAcctFileList = this.getAccountLines();
+			for (MZLoadCoreAcctFile loadCoreAcctFile: loadCoreAcctFileList){
+
+				// Si esta linea no esta OK, no la proceso.
+				if (!loadCoreAcctFile.isConfirmed()){
+					continue;
+				}
+
+
+			}
+
+		}
+		catch (Exception e){
+			throw new AdempiereException(e);
 		}
 	}
 
