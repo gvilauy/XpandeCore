@@ -31,7 +31,7 @@ public interface I_Z_LoadCoreBPFile
     /** TableName=Z_LoadCoreBPFile */
     public static final String Table_Name = "Z_LoadCoreBPFile";
 
-    /** AD_Table_ID=1000363 */
+    /** AD_Table_ID=1000270 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -49,6 +49,19 @@ public interface I_Z_LoadCoreBPFile
 	  * Client/Tenant for this installation.
 	  */
 	public int getAD_Client_ID();
+
+    /** Column name Address1 */
+    public static final String COLUMNNAME_Address1 = "Address1";
+
+	/** Set Address 1.
+	  * Address line 1 for this location
+	  */
+	public void setAddress1 (String Address1);
+
+	/** Get Address 1.
+	  * Address line 1 for this location
+	  */
+	public String getAddress1();
 
     /** Column name AD_Org_ID */
     public static final String COLUMNNAME_AD_Org_ID = "AD_Org_ID";
@@ -78,6 +91,36 @@ public interface I_Z_LoadCoreBPFile
 
 	public I_C_BPartner getC_BPartner() throws RuntimeException;
 
+    /** Column name C_City_ID */
+    public static final String COLUMNNAME_C_City_ID = "C_City_ID";
+
+	/** Set City.
+	  * City
+	  */
+	public void setC_City_ID (int C_City_ID);
+
+	/** Get City.
+	  * City
+	  */
+	public int getC_City_ID();
+
+	public I_C_City getC_City() throws RuntimeException;
+
+    /** Column name C_Country_ID */
+    public static final String COLUMNNAME_C_Country_ID = "C_Country_ID";
+
+	/** Set Country.
+	  * Country 
+	  */
+	public void setC_Country_ID (int C_Country_ID);
+
+	/** Get Country.
+	  * Country 
+	  */
+	public int getC_Country_ID();
+
+	public I_C_Country getC_Country() throws RuntimeException;
+
     /** Column name CodigoInterno */
     public static final String COLUMNNAME_CodigoInterno = "CodigoInterno";
 
@@ -90,6 +133,32 @@ public interface I_Z_LoadCoreBPFile
 	  * Código interno genérico
 	  */
 	public String getCodigoInterno();
+
+    /** Column name CodLocalidad */
+    public static final String COLUMNNAME_CodLocalidad = "CodLocalidad";
+
+	/** Set CodLocalidad.
+	  * Código de Localidad
+	  */
+	public void setCodLocalidad (String CodLocalidad);
+
+	/** Get CodLocalidad.
+	  * Código de Localidad
+	  */
+	public String getCodLocalidad();
+
+    /** Column name CodRegion */
+    public static final String COLUMNNAME_CodRegion = "CodRegion";
+
+	/** Set CodRegion.
+	  * Código de Región
+	  */
+	public void setCodRegion (String CodRegion);
+
+	/** Get CodRegion.
+	  * Código de Región
+	  */
+	public String getCodRegion();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -107,6 +176,21 @@ public interface I_Z_LoadCoreBPFile
 	  */
 	public int getCreatedBy();
 
+    /** Column name C_Region_ID */
+    public static final String COLUMNNAME_C_Region_ID = "C_Region_ID";
+
+	/** Set Region.
+	  * Identifies a geographical Region
+	  */
+	public void setC_Region_ID (int C_Region_ID);
+
+	/** Get Region.
+	  * Identifies a geographical Region
+	  */
+	public int getC_Region_ID();
+
+	public I_C_Region getC_Region() throws RuntimeException;
+
     /** Column name C_TaxGroup_ID */
     public static final String COLUMNNAME_C_TaxGroup_ID = "C_TaxGroup_ID";
 
@@ -117,6 +201,19 @@ public interface I_Z_LoadCoreBPFile
 	public int getC_TaxGroup_ID();
 
 	public org.eevolution.model.I_C_TaxGroup getC_TaxGroup() throws RuntimeException;
+
+    /** Column name EMail */
+    public static final String COLUMNNAME_EMail = "EMail";
+
+	/** Set EMail Address.
+	  * Electronic Mail Address
+	  */
+	public void setEMail (String EMail);
+
+	/** Get EMail Address.
+	  * Electronic Mail Address
+	  */
+	public String getEMail();
 
     /** Column name ErrorMsg */
     public static final String COLUMNNAME_ErrorMsg = "ErrorMsg";
@@ -249,6 +346,19 @@ public interface I_Z_LoadCoreBPFile
 	/** Get LineNumber	  */
 	public int getLineNumber();
 
+    /** Column name MobilePhone */
+    public static final String COLUMNNAME_MobilePhone = "MobilePhone";
+
+	/** Set Mobile Phone.
+	  * Identifies an alternate telephone mobile number.
+	  */
+	public void setMobilePhone (String MobilePhone);
+
+	/** Get Mobile Phone.
+	  * Identifies an alternate telephone mobile number.
+	  */
+	public String getMobilePhone();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -274,6 +384,19 @@ public interface I_Z_LoadCoreBPFile
 	  * Additional Name
 	  */
 	public String getName2();
+
+    /** Column name Phone */
+    public static final String COLUMNNAME_Phone = "Phone";
+
+	/** Set Phone.
+	  * Identifies a telephone number
+	  */
+	public void setPhone (String Phone);
+
+	/** Get Phone.
+	  * Identifies a telephone number
+	  */
+	public String getPhone();
 
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";

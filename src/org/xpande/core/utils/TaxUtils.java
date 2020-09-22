@@ -1,9 +1,6 @@
 package org.xpande.core.utils;
 
-import org.compiere.model.I_C_Tax;
-import org.compiere.model.MTax;
-import org.compiere.model.Query;
-import org.compiere.model.X_C_Tax;
+import org.compiere.model.*;
 
 import java.util.Properties;
 
@@ -64,6 +61,14 @@ public final class TaxUtils {
 
         try {
 
+            // Obtengo pais para validacion (por defecto Uruguay = 336)
+            int taxID_CountryValidator = MSysConfig.getIntValue("Z_TaxID_Country_Validation", 336);
+
+            // Si debo validar para Ecuador
+            if (taxID_CountryValidator == 171){
+                return TaxUtilsEcuador.validateRUT(rut);
+            }
+
             // Saco ultimo digito al RUT recibido
             String digitoVerificadorRUT = rut.substring(rut.length()-1);
             String rutAux = rut.substring(0, rut.length()-1);
@@ -107,6 +112,14 @@ public final class TaxUtils {
      * @return
      */
     public static boolean validateCI(String ci) {
+
+        // Obtengo pais para validacion (por defecto Uruguay = 336)
+        int taxID_CountryValidator = MSysConfig.getIntValue("Z_TaxID_Country_Validation", 336);
+
+        // Si debo validar para Ecuador
+        if (taxID_CountryValidator == 171){
+            return TaxUtilsEcuador.validateCI(ci);
+        }
 
         if(ci.length() != 7 && ci.length() != 8){
             return false;

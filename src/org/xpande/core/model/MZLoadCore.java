@@ -576,6 +576,9 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 
 				// Codigo interno
 				if ((loadCoreBPFile.getCodigoInterno() != null) && (!loadCoreBPFile.getCodigoInterno().trim().equalsIgnoreCase(""))){
+
+					loadCoreBPFile.setCodigoInterno(loadCoreBPFile.getCodigoInterno().trim());
+
 					// Verifico si ya existe un socio de negocio en el sistema con ese codigo interno
 					sql = " select c_bpartner_id from c_bpartner where upper(value) ='" + loadCoreBPFile.getCodigoInterno().trim().toUpperCase() + "'";
 					int cBPartnerIDAux = DB.getSQLValueEx(null, sql);
@@ -592,6 +595,9 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 						loadCoreBPFile.setErrorMsg("Debe indicar Razón Social");
 					}
 					else{
+
+						loadCoreBPFile.setName(loadCoreBPFile.getName().trim());
+
 						// Verifico si ya existe un socio de negocio en el sistema con esa Razón Social
 						sql = " select c_bpartner_id from c_bpartner where upper(name) ='" + loadCoreBPFile.getName().trim().toUpperCase() + "'";
 						int cBPartnerIDAux = DB.getSQLValueEx(null, sql);
@@ -609,8 +615,11 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 						loadCoreBPFile.setErrorMsg("Debe indicar Tipo de Identificación");
 					}
 					else{
+
+						loadCoreBPFile.setTipoIdentificacion(loadCoreBPFile.getTipoIdentificacion().trim());
+
 						// Obtengo tipo de identificación de ADempiere, segun tipo recibido
-						sql = " select c_taxgroup_id from c_taxgroup where upper(name) ='" + loadCoreBPFile.getTipoIdentificacion().trim().toUpperCase() + "'";
+						sql = " select c_taxgroup_id from c_taxgroup where upper(value) ='" + loadCoreBPFile.getTipoIdentificacion().trim().toUpperCase() + "'";
 						int cTaxGroupID = DB.getSQLValueEx(null, sql);
 						if (cTaxGroupID <= 0){
 							loadCoreBPFile.setIsConfirmed(false);
@@ -629,12 +638,59 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 						loadCoreBPFile.setErrorMsg("Debe indicar Número de Identificación");
 					}
 					else{
+
+						loadCoreBPFile.setTaxID(loadCoreBPFile.getTaxID().trim());
+
 						// Verifico si ya existe un socio de negocio en el sistema con ese número de identificación.
 						sql = " select c_bpartner_id from c_bpartner where upper(taxid) ='" + loadCoreBPFile.getTaxID().trim().toUpperCase() + "'";
 						int cBPartnerIDAux = DB.getSQLValueEx(null, sql);
 						if (cBPartnerIDAux > 0){
 							loadCoreBPFile.setIsConfirmed(false);
 							loadCoreBPFile.setErrorMsg("Ya existe en el sistema un Socio de Negocio con este Número de Identificación.");
+						}
+					}
+				}
+
+				// Departamento
+				if (loadCoreBPFile.isConfirmed()){
+					// Si tengo departamento
+					if ((loadCoreBPFile.getCodRegion() != null) && (!loadCoreBPFile.getCodRegion().trim().equalsIgnoreCase(""))){
+						// Si tengo pais
+						if (loadCoreBPFile.getC_Country_ID() > 0){
+
+							loadCoreBPFile.setCodRegion(loadCoreBPFile.getCodRegion().trim());
+
+							// Busco departamento según codigo recibido
+							sql = " select c_region_id from c_region " +
+									" where lower(value) ='" + loadCoreBPFile.getCodRegion().trim().toLowerCase() + "' " +
+									" and c_country_id =" + loadCoreBPFile.getC_Country_ID();
+							int cRegionID = DB.getSQLValueEx(null, sql);
+							if (cRegionID > 0){
+								loadCoreBPFile.setC_Region_ID(cRegionID);
+
+								// Localidad
+								if ((loadCoreBPFile.getCodLocalidad() != null) && (!loadCoreBPFile.getCodLocalidad().trim().equalsIgnoreCase(""))){
+
+									loadCoreBPFile.setCodLocalidad(loadCoreBPFile.getCodLocalidad().trim());
+
+									// Busco localidad según codigo recibido
+									sql = " select c_city_id from c_city " +
+											" where lower(locode) ='" + loadCoreBPFile.getCodLocalidad().trim().toLowerCase() + "' " +
+											" and c_region_id =" + loadCoreBPFile.getC_Region_ID();
+									int cCityID = DB.getSQLValueEx(null, sql);
+									if (cCityID > 0){
+										loadCoreBPFile.setC_City_ID(cCityID);
+									}
+									else{
+										loadCoreBPFile.setIsConfirmed(false);
+										loadCoreBPFile.setErrorMsg("No existe Localidad con ese Código para el País-Departamento indicado.");
+									}
+								}
+							}
+							else {
+								loadCoreBPFile.setIsConfirmed(false);
+								loadCoreBPFile.setErrorMsg("No existe Departamento con ese Código para el País indicado.");
+							}
 						}
 					}
 				}
@@ -762,14 +818,16 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 				// Cuenta Padre
 				if ((loadCoreAcctFile.getParentValue() != null) && (!loadCoreAcctFile.getParentValue().trim().equalsIgnoreCase(""))){
 
+					loadCoreAcctFile.setParentValue(loadCoreAcctFile.getParentValue().trim());
+
 					// Si la cuenta padre es distinta de CERO, debo validar que exista una cuenta con este codigo
 					if (!loadCoreAcctFile.getParentValue().trim().equalsIgnoreCase("0")){
 						// Verifico si existe una cuenta con este código en esta carga de archivo
-						sql = " select count(*) from z_loadcoreacctfile where value ='" + loadCoreAcctFile.getParentValue() + "'";
+						sql = " select count(*) from z_loadcoreacctfile where rtrim(value) ='" + loadCoreAcctFile.getParentValue().trim() + "'";
 						int contador = DB.getSQLValueEx(null, sql);
 						if (contador <= 0){
 							loadCoreAcctFile.setIsConfirmed(false);
-							loadCoreAcctFile.setErrorMsg("No existe cuenta padre con código: " + loadCoreAcctFile.getParentValue());
+							loadCoreAcctFile.setErrorMsg("No existe cuenta padre con código: " + loadCoreAcctFile.getParentValue().trim());
 						}
 					}
 				}
@@ -785,12 +843,15 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 						loadCoreAcctFile.setErrorMsg("Falta indicar Código de Cuenta");
 					}
 					else{
+
+						loadCoreAcctFile.setValue(loadCoreAcctFile.getValue().trim());
+
 						// Verifico codigo de cuenta unicó
-						sql = " select count(*) from z_loadcoreacctfile where value ='" + loadCoreAcctFile.getValue() + "'";
+						sql = " select count(*) from z_loadcoreacctfile where rtrim(value) ='" + loadCoreAcctFile.getValue().trim() + "'";
 						int contador = DB.getSQLValueEx(null, sql);
 						if (contador > 1){
 							loadCoreAcctFile.setIsConfirmed(false);
-							loadCoreAcctFile.setErrorMsg("Código de cuenta repetido: " + loadCoreAcctFile.getValue());
+							loadCoreAcctFile.setErrorMsg("Código de cuenta repetido: " + loadCoreAcctFile.getValue().trim());
 						}
 					}
 				}
@@ -802,13 +863,18 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 						loadCoreAcctFile.setErrorMsg("Falta indicar Nombre de Cuenta");
 					}
 					else{
+
+						loadCoreAcctFile.setName(loadCoreAcctFile.getName().trim());
+
+						/*
 						// Verifico nombre de cuenta unicó
-						sql = " select count(*) from z_loadcoreacctfile where lower(name) ='" + loadCoreAcctFile.getName().toLowerCase() + "'";
+						sql = " select count(*) from z_loadcoreacctfile where lower(rtrim(name)) ='" + loadCoreAcctFile.getName().trim().toLowerCase() + "'";
 						int contador = DB.getSQLValueEx(null, sql);
 						if (contador > 1){
 							loadCoreAcctFile.setIsConfirmed(false);
-							loadCoreAcctFile.setErrorMsg("Nombre de cuenta repetido: " + loadCoreAcctFile.getName());
+							loadCoreAcctFile.setErrorMsg("Nombre de cuenta repetido: " + loadCoreAcctFile.getName().trim());
 						}
+						*/
 					}
 				}
 
@@ -835,7 +901,6 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 			this.setQty(contadorOK);
 			this.setQtyReject(contadorError);
 			this.saveEx();
-
 		}
 		catch (Exception e){
 			throw new AdempiereException(e);
@@ -914,17 +979,53 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 				partner.saveEx();
 
 				// Creo localizacion
-				MLocation location = new MLocation(getCtx(), 336, 1000000, "MONTEVIDEO", get_TrxName());
-				location.setC_City_ID(1000032);
-				location.setAddress1("SIN ASIGNAR");
-				location.setRegionName("MONTEVIDEO");
-				location.saveEx();
+				MLocation location = null;
+				if ((loadCoreBPFile.getC_Country_ID() > 0) && (loadCoreBPFile.getC_Region_ID() > 0)){
 
-				MBPartnerLocation partnerLocation = new MBPartnerLocation(getCtx(), 0, get_TrxName());
-				partnerLocation.setC_BPartner_ID(partner.get_ID());
-				partnerLocation.setC_Location_ID(location.get_ID());
-				partnerLocation.setName(location.getRegionName());
-				partnerLocation.saveEx();
+					MCountry country = (MCountry) loadCoreBPFile.getC_Country();
+					MRegion region = (MRegion) loadCoreBPFile.getC_Region();
+					location = new MLocation(country, region);
+					location.setRegionName(region.getName());
+
+					if (loadCoreBPFile.getC_City_ID() > 0){
+						MCity city = (MCity) loadCoreBPFile.getC_City();
+						location.setCity(city.getName());
+						location.setC_City_ID(loadCoreBPFile.getC_City_ID());
+					}
+
+					if ((loadCoreBPFile.getAddress1() != null) && (!loadCoreBPFile.getAddress1().trim().equalsIgnoreCase(""))){
+						location.setAddress1(loadCoreBPFile.getAddress1().trim().toUpperCase());
+					}
+					else {
+						location.setAddress1("SIN ASIGNAR");
+					}
+					location.saveEx();
+
+					MBPartnerLocation partnerLocation = new MBPartnerLocation(getCtx(), 0, get_TrxName());
+					partnerLocation.setC_BPartner_ID(partner.get_ID());
+					partnerLocation.setC_Location_ID(location.get_ID());
+
+					if ((loadCoreBPFile.getAddress1() != null) && (!loadCoreBPFile.getAddress1().trim().equalsIgnoreCase(""))){
+						partnerLocation.setName(loadCoreBPFile.getAddress1().trim().toUpperCase());
+					}
+					else{
+						partnerLocation.setName(location.getRegionName());
+					}
+
+					if ((loadCoreBPFile.getPhone() != null) && (!loadCoreBPFile.getPhone().trim().equalsIgnoreCase(""))){
+						partnerLocation.setPhone(loadCoreBPFile.getPhone().trim());
+					}
+
+					if ((loadCoreBPFile.getMobilePhone() != null) && (!loadCoreBPFile.getMobilePhone().trim().equalsIgnoreCase(""))){
+						partnerLocation.setMobilePhone(loadCoreBPFile.getMobilePhone().trim());
+					}
+
+					if ((loadCoreBPFile.getEMail() != null) && (!loadCoreBPFile.getEMail().trim().equalsIgnoreCase(""))){
+						partnerLocation.setEMail(loadCoreBPFile.getEMail().trim());
+					}
+
+					partnerLocation.saveEx();
+				}
 			}
 
 		}

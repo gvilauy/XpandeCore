@@ -30,7 +30,7 @@ public class X_Z_LoadCoreBPFile extends PO implements I_Z_LoadCoreBPFile, I_Pers
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200723L;
+	private static final long serialVersionUID = 20200921L;
 
     /** Standard Constructor */
     public X_Z_LoadCoreBPFile (Properties ctx, int Z_LoadCoreBPFile_ID, String trxName)
@@ -55,7 +55,6 @@ public class X_Z_LoadCoreBPFile extends PO implements I_Z_LoadCoreBPFile, I_Pers
 			setProcessed (false);
 // N
 			setZ_LoadCoreBPFile_ID (0);
-			setZ_LoadCore_ID (0);
         } */
     }
 
@@ -87,6 +86,23 @@ public class X_Z_LoadCoreBPFile extends PO implements I_Z_LoadCoreBPFile, I_Pers
       return sb.toString();
     }
 
+	/** Set Address 1.
+		@param Address1 
+		Address line 1 for this location
+	  */
+	public void setAddress1 (String Address1)
+	{
+		set_Value (COLUMNNAME_Address1, Address1);
+	}
+
+	/** Get Address 1.
+		@return Address line 1 for this location
+	  */
+	public String getAddress1 () 
+	{
+		return (String)get_Value(COLUMNNAME_Address1);
+	}
+
 	public I_C_BPartner getC_BPartner() throws RuntimeException
     {
 		return (I_C_BPartner)MTable.get(getCtx(), I_C_BPartner.Table_Name)
@@ -115,6 +131,62 @@ public class X_Z_LoadCoreBPFile extends PO implements I_Z_LoadCoreBPFile, I_Pers
 		return ii.intValue();
 	}
 
+	public I_C_City getC_City() throws RuntimeException
+    {
+		return (I_C_City)MTable.get(getCtx(), I_C_City.Table_Name)
+			.getPO(getC_City_ID(), get_TrxName());	}
+
+	/** Set City.
+		@param C_City_ID 
+		City
+	  */
+	public void setC_City_ID (int C_City_ID)
+	{
+		if (C_City_ID < 1) 
+			set_Value (COLUMNNAME_C_City_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_City_ID, Integer.valueOf(C_City_ID));
+	}
+
+	/** Get City.
+		@return City
+	  */
+	public int getC_City_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_City_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public I_C_Country getC_Country() throws RuntimeException
+    {
+		return (I_C_Country)MTable.get(getCtx(), I_C_Country.Table_Name)
+			.getPO(getC_Country_ID(), get_TrxName());	}
+
+	/** Set Country.
+		@param C_Country_ID 
+		Country 
+	  */
+	public void setC_Country_ID (int C_Country_ID)
+	{
+		if (C_Country_ID < 1) 
+			set_Value (COLUMNNAME_C_Country_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_Country_ID, Integer.valueOf(C_Country_ID));
+	}
+
+	/** Get Country.
+		@return Country 
+	  */
+	public int getC_Country_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Country_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	/** Set CodigoInterno.
 		@param CodigoInterno 
 		Código interno genérico
@@ -130,6 +202,68 @@ public class X_Z_LoadCoreBPFile extends PO implements I_Z_LoadCoreBPFile, I_Pers
 	public String getCodigoInterno () 
 	{
 		return (String)get_Value(COLUMNNAME_CodigoInterno);
+	}
+
+	/** Set CodLocalidad.
+		@param CodLocalidad 
+		Código de Localidad
+	  */
+	public void setCodLocalidad (String CodLocalidad)
+	{
+		set_Value (COLUMNNAME_CodLocalidad, CodLocalidad);
+	}
+
+	/** Get CodLocalidad.
+		@return Código de Localidad
+	  */
+	public String getCodLocalidad () 
+	{
+		return (String)get_Value(COLUMNNAME_CodLocalidad);
+	}
+
+	/** Set CodRegion.
+		@param CodRegion 
+		Código de Región
+	  */
+	public void setCodRegion (String CodRegion)
+	{
+		set_Value (COLUMNNAME_CodRegion, CodRegion);
+	}
+
+	/** Get CodRegion.
+		@return Código de Región
+	  */
+	public String getCodRegion () 
+	{
+		return (String)get_Value(COLUMNNAME_CodRegion);
+	}
+
+	public I_C_Region getC_Region() throws RuntimeException
+    {
+		return (I_C_Region)MTable.get(getCtx(), I_C_Region.Table_Name)
+			.getPO(getC_Region_ID(), get_TrxName());	}
+
+	/** Set Region.
+		@param C_Region_ID 
+		Identifies a geographical Region
+	  */
+	public void setC_Region_ID (int C_Region_ID)
+	{
+		if (C_Region_ID < 1) 
+			set_Value (COLUMNNAME_C_Region_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_Region_ID, Integer.valueOf(C_Region_ID));
+	}
+
+	/** Get Region.
+		@return Identifies a geographical Region
+	  */
+	public int getC_Region_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Region_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	public org.eevolution.model.I_C_TaxGroup getC_TaxGroup() throws RuntimeException
@@ -155,6 +289,23 @@ public class X_Z_LoadCoreBPFile extends PO implements I_Z_LoadCoreBPFile, I_Pers
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set EMail Address.
+		@param EMail 
+		Electronic Mail Address
+	  */
+	public void setEMail (String EMail)
+	{
+		set_Value (COLUMNNAME_EMail, EMail);
+	}
+
+	/** Get EMail Address.
+		@return Electronic Mail Address
+	  */
+	public String getEMail () 
+	{
+		return (String)get_Value(COLUMNNAME_EMail);
 	}
 
 	/** Set Error Msg.
@@ -370,6 +521,23 @@ public class X_Z_LoadCoreBPFile extends PO implements I_Z_LoadCoreBPFile, I_Pers
 		return ii.intValue();
 	}
 
+	/** Set Mobile Phone.
+		@param MobilePhone 
+		Identifies an alternate telephone mobile number.
+	  */
+	public void setMobilePhone (String MobilePhone)
+	{
+		set_Value (COLUMNNAME_MobilePhone, MobilePhone);
+	}
+
+	/** Get Mobile Phone.
+		@return Identifies an alternate telephone mobile number.
+	  */
+	public String getMobilePhone () 
+	{
+		return (String)get_Value(COLUMNNAME_MobilePhone);
+	}
+
 	/** Set Name.
 		@param Name 
 		Alphanumeric identifier of the entity
@@ -402,6 +570,23 @@ public class X_Z_LoadCoreBPFile extends PO implements I_Z_LoadCoreBPFile, I_Pers
 	public String getName2 () 
 	{
 		return (String)get_Value(COLUMNNAME_Name2);
+	}
+
+	/** Set Phone.
+		@param Phone 
+		Identifies a telephone number
+	  */
+	public void setPhone (String Phone)
+	{
+		set_Value (COLUMNNAME_Phone, Phone);
+	}
+
+	/** Get Phone.
+		@return Identifies a telephone number
+	  */
+	public String getPhone () 
+	{
+		return (String)get_Value(COLUMNNAME_Phone);
 	}
 
 	/** Set Processed.
