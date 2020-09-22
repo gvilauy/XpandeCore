@@ -1,5 +1,6 @@
 package org.xpande.core.utils;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.*;
 
 import java.util.Properties;
@@ -55,18 +56,15 @@ public final class TaxUtils {
      * @param rut
      * @return
      */
-    public static boolean validateRUT(String rut){
-
-        boolean value = true;
+    public static String validateRUT(String rut){
 
         try {
-
             // Obtengo pais para validacion (por defecto Uruguay = 336)
             int taxID_CountryValidator = MSysConfig.getIntValue("Z_TaxID_Country_Validation", 336);
 
             // Si debo validar para Ecuador
             if (taxID_CountryValidator == 171){
-                return TaxUtilsEcuador.validateRUT(rut);
+                return TaxUtilsEcuador.validateRUC(rut);
             }
 
             // Saco ultimo digito al RUT recibido
@@ -94,15 +92,15 @@ public final class TaxUtils {
             if(digitoVerificador == 10) digitoVerificador = 1;
 
             if (digitoVerificador != Integer.parseInt(digitoVerificadorRUT)){
-                value = false;
+                return "Número de Identificación inválido. No cumple con los requisitos de validación.";
             }
 
         }
         catch (Exception e) {
-            value = false;
+            throw new AdempiereException(e);
         }
 
-        return value;
+        return null;
     }
 
 
@@ -111,7 +109,7 @@ public final class TaxUtils {
      * @param ci
      * @return
      */
-    public static boolean validateCI(String ci) {
+    public static String validateCI(String ci) {
 
         // Obtengo pais para validacion (por defecto Uruguay = 336)
         int taxID_CountryValidator = MSysConfig.getIntValue("Z_TaxID_Country_Validation", 336);
@@ -122,12 +120,12 @@ public final class TaxUtils {
         }
 
         if(ci.length() != 7 && ci.length() != 8){
-            return false;
+            return "Número de Identificación inválido. No cumple con los requisitos de validación.";
         }else{
             try{
                 Integer.parseInt(ci);
             }catch (NumberFormatException e){
-                return false;
+                return "Número de Identificación inválido. No cumple con los requisitos de validación.";
             }
         }
 
@@ -150,11 +148,16 @@ public final class TaxUtils {
         int checkdigit = 10 - resto;
 
         if(checkdigit == 10){
-            return (digVerificador == 0);
+            if (digVerificador != 0){
+                return "Número de Identificación inválido. No cumple con los requisitos de validación.";
+            }
         }else {
-            return (checkdigit == digVerificador) ;
+            if (checkdigit != digVerificador){
+                return "Número de Identificación inválido. No cumple con los requisitos de validación.";
+            }
         }
 
+        return null;
     }
 
 }

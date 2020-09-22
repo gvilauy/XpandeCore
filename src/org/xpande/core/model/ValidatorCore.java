@@ -211,19 +211,22 @@ public class ValidatorCore implements ModelValidator {
                    }
 
                    // Valido RUT o C.I.
+                   String message = null;
                    if (model.getC_TaxGroup_ID() > 0){
                        X_C_TaxGroup taxGroup = (X_C_TaxGroup) model.getC_TaxGroup();
-                       if (taxGroup.getValue().equalsIgnoreCase("RUT")){
-                           if (!TaxUtils.validateRUT(model.getTaxID())){
-                               return "El RUT ingresado NO es válido, no cumple con los requisitos de DGI.";
+                       if ((taxGroup.getValue().equalsIgnoreCase("RUT"))
+                               || (taxGroup.getValue().equalsIgnoreCase("RUC"))){
+                           message = TaxUtils.validateRUT(model.getTaxID());
+                           if (message != null){
+                               return message + " - " + model.getTaxID() + ", " + model.getName();
                            }
                        }
                        else if (taxGroup.getValue().equalsIgnoreCase("CI")){
-                           if (!TaxUtils.validateCI(model.getTaxID())){
-                               return "La Cédula de Identidad ingresada NO es válida.";
+                           message = TaxUtils.validateCI(model.getTaxID());
+                           if (message != null){
+                               return message + " - " + model.getTaxID() + ", " + model.getName();
                            }
                        }
-
                    }
                }
             }

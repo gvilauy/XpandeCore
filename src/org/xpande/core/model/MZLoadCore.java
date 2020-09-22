@@ -648,6 +648,16 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 							loadCoreBPFile.setIsConfirmed(false);
 							loadCoreBPFile.setErrorMsg("Ya existe en el sistema un Socio de Negocio con este Número de Identificación.");
 						}
+
+						// Verifico si ya existe un socio de negocio en esta carga con ese número de identificación.
+						sql = " select count(*) from z_loadcorebpfile " +
+								" where rtrim(taxid) ='" + loadCoreBPFile.getTaxID().trim() + "'" +
+								" and z_loadcore_id =" + this.get_ID();
+						int contador = DB.getSQLValueEx(null, sql);
+						if (contador > 1){
+							loadCoreBPFile.setIsConfirmed(false);
+							loadCoreBPFile.setErrorMsg("Número de Identificación repetido en esta carga.");
+						}
 					}
 				}
 
@@ -955,7 +965,7 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 
 				// Creo socio de negocio
 				MBPartner partner = new MBPartner(getCtx(), 0, get_TrxName());
-				partner.setAD_Org_ID(this.getAD_Org_ID());
+				partner.setAD_Org_ID(0);
 				partner.setName(loadCoreBPFile.getName().trim().toUpperCase());
 				partner.setC_TaxGroup_ID(loadCoreBPFile.getC_TaxGroup_ID());
 				partner.setTaxID(loadCoreBPFile.getTaxID().trim());
@@ -1002,6 +1012,7 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 					location.saveEx();
 
 					MBPartnerLocation partnerLocation = new MBPartnerLocation(getCtx(), 0, get_TrxName());
+					partnerLocation.setAD_Org_ID(0);
 					partnerLocation.setC_BPartner_ID(partner.get_ID());
 					partnerLocation.setC_Location_ID(location.get_ID());
 
@@ -1010,6 +1021,9 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 					}
 					else{
 						partnerLocation.setName(location.getRegionName());
+					}
+					if ((partnerLocation.getName() == null) || (partnerLocation.getName().trim().equalsIgnoreCase(""))){
+						partnerLocation.setName("SIN DIRECCION");
 					}
 
 					if ((loadCoreBPFile.getPhone() != null) && (!loadCoreBPFile.getPhone().trim().equalsIgnoreCase(""))){
