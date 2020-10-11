@@ -29,6 +29,7 @@ public class ValidatorCore implements ModelValidator {
         engine.addModelChange(I_M_Product.Table_Name, this);
         engine.addModelChange(I_C_BPartner.Table_Name, this);
         engine.addModelChange(I_C_City.Table_Name, this);
+        engine.addModelChange(I_C_BPartner_Location.Table_Name, this);
 
     }
 
@@ -53,6 +54,9 @@ public class ValidatorCore implements ModelValidator {
         }
         else if (po.get_TableName().equalsIgnoreCase(I_C_City.Table_Name)){
             return modelChange((MCity) po, type);
+        }
+        else if (po.get_TableName().equalsIgnoreCase(I_C_BPartner_Location.Table_Name)){
+            return modelChange((MBPartnerLocation) po, type);
         }
 
         return null;
@@ -124,7 +128,6 @@ public class ValidatorCore implements ModelValidator {
      */
     public String modelChange(MCity model, int type) throws Exception {
 
-        String mensaje = null;
         String sql = "", whereClause = "";
         int contador = 0;
 
@@ -141,8 +144,54 @@ public class ValidatorCore implements ModelValidator {
             }
         }
 
-        return mensaje;
+        return null;
+    }
 
+    /***
+     * Validaciones para el modelo de Localizaciones.
+     * Xpande. Created by Gabriel Vila on 11/6/19.
+     * @param model
+     * @param type
+     * @return
+     * @throws Exception
+     */
+    public String modelChange(MBPartnerLocation model, int type) throws Exception {
+
+        String sql = "", whereClause = "";
+        int contador = 0;
+
+        if ((type == ModelValidator.TYPE_BEFORE_NEW) || (type == ModelValidator.TYPE_BEFORE_CHANGE)){
+
+            // Me aseguro nombre en mayúsculas
+            if (model.getName() != null){
+                model.setName(model.getName().toUpperCase().trim());
+            }
+
+            // Me aseguro organizacion *
+            if (model.getAD_Org_ID() > 0){
+                model.setAD_Org_ID(0);
+            }
+
+        }
+
+        if ((type == ModelValidator.TYPE_AFTER_NEW) || (type == ModelValidator.TYPE_AFTER_CHANGE)){
+
+            // Me aseguro que la localización tenga región si corresponde
+            if (model.getC_Location_ID() > 0){
+                MLocation location = (MLocation) model.getC_Location();
+                if (location.getC_Region_ID() <= 0){
+                    if (location.getC_City_ID() > 0){
+                        MCity city = (MCity) location.getC_City();
+                        if (city.getC_Region_ID() > 0){
+                            location.setC_Region_ID(city.getC_Region_ID());
+                            location.saveEx();
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     /***
