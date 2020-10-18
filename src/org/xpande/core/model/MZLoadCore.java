@@ -968,7 +968,11 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 				partner.setAD_Org_ID(0);
 				partner.setName(loadCoreBPFile.getName().trim().toUpperCase());
 				partner.setC_TaxGroup_ID(loadCoreBPFile.getC_TaxGroup_ID());
-				partner.setTaxID(loadCoreBPFile.getTaxID().trim());
+
+				if (loadCoreBPFile.getTaxID() != null){
+					partner.setTaxID(loadCoreBPFile.getTaxID().trim());
+				}
+
 				partner.setIsCustomer(loadCoreBPFile.isCustomer());
 				partner.setIsVendor(loadCoreBPFile.isVendor());
 				partner.setIsEmployee(loadCoreBPFile.isEmployee());
