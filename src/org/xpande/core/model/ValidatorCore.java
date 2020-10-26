@@ -243,7 +243,11 @@ public class ValidatorCore implements ModelValidator {
             // Si es cliente, tiene que tener número de indentificación.
             if (model.isCustomer()){
                 if (model.getTaxID() == null){
-                    return "Debe indicar Número de Identificación cuando el socio de negocio esta marcado como Cliente";
+                    // Si el grupo de impuesto no permite numero de identificación nulo para clienes, aviso y salgo.
+                    X_C_TaxGroup taxGroup = (X_C_TaxGroup) model.getC_TaxGroup();
+                    if (!taxGroup.get_ValueAsBoolean("AllowCustomerNull")){
+                        return "Debe indicar Número de Identificación cuando el socio de negocio esta marcado como Cliente";
+                    }
                 }
             }
 
@@ -256,7 +260,7 @@ public class ValidatorCore implements ModelValidator {
                    sql = " select count(*) from c_bpartner where lower(taxid) ='" + model.getTaxID().toLowerCase() + "' " + whereClause;
                    contador = DB.getSQLValueEx(model.get_TrxName(), sql);
                    if (contador > 0){
-                       return "Ya existe un Socio de Negocio definido en el sistema con este Número de Identificación";
+                       return "Ya existe un Socio de Negocio definido en el sistema con este Número de Identificación : " + model.getTaxID();
                    }
 
                    // Valido RUT o C.I.

@@ -31,7 +31,7 @@ public class X_Z_LoadCore extends PO implements I_Z_LoadCore, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200919L;
+	private static final long serialVersionUID = 20201026L;
 
     /** Standard Constructor */
     public X_Z_LoadCore (Properties ctx, int Z_LoadCore_ID, String trxName)
@@ -54,6 +54,8 @@ public class X_Z_LoadCore extends PO implements I_Z_LoadCore, I_Persistent
 			setProcessing (false);
 // N
 			setTipoLoadCore (null);
+			setValidaLocalidad (false);
+// N
 			setZ_LoadCore_ID (0);
         } */
     }
@@ -483,6 +485,30 @@ public class X_Z_LoadCore extends PO implements I_Z_LoadCore, I_Persistent
 	public String getUUID () 
 	{
 		return (String)get_Value(COLUMNNAME_UUID);
+	}
+
+	/** Set ValidaLocalidad.
+		@param ValidaLocalidad 
+		Si se valida o no una localidad ingresada
+	  */
+	public void setValidaLocalidad (boolean ValidaLocalidad)
+	{
+		set_Value (COLUMNNAME_ValidaLocalidad, Boolean.valueOf(ValidaLocalidad));
+	}
+
+	/** Get ValidaLocalidad.
+		@return Si se valida o no una localidad ingresada
+	  */
+	public boolean isValidaLocalidad () 
+	{
+		Object oo = get_Value(COLUMNNAME_ValidaLocalidad);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Z_LoadCore ID.

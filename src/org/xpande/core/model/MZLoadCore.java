@@ -634,8 +634,12 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 				// Numero de identificación
 				if (loadCoreBPFile.isConfirmed()){
 					if ((loadCoreBPFile.getTaxID() == null) || (loadCoreBPFile.getTaxID().trim().equalsIgnoreCase(""))){
-						loadCoreBPFile.setIsConfirmed(false);
-						loadCoreBPFile.setErrorMsg("Debe indicar Número de Identificación");
+						// Si el grupo de impuesto no permite numero de identificación nulo para clienes, aviso y salgo.
+						X_C_TaxGroup taxGroup = (X_C_TaxGroup) loadCoreBPFile.getC_TaxGroup();
+						if (!taxGroup.get_ValueAsBoolean("AllowCustomerNull")){
+							loadCoreBPFile.setIsConfirmed(false);
+							loadCoreBPFile.setErrorMsg("Debe indicar Número de Identificación cuando el socio de negocio esta marcado como Cliente");
+						}
 					}
 					else{
 
@@ -679,21 +683,23 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 								loadCoreBPFile.setC_Region_ID(cRegionID);
 
 								// Localidad
-								if ((loadCoreBPFile.getCodLocalidad() != null) && (!loadCoreBPFile.getCodLocalidad().trim().equalsIgnoreCase(""))){
+								if (this.isValidaLocalidad()){
+									if ((loadCoreBPFile.getCodLocalidad() != null) && (!loadCoreBPFile.getCodLocalidad().trim().equalsIgnoreCase(""))){
 
-									loadCoreBPFile.setCodLocalidad(loadCoreBPFile.getCodLocalidad().trim());
+										loadCoreBPFile.setCodLocalidad(loadCoreBPFile.getCodLocalidad().trim());
 
-									// Busco localidad según codigo recibido
-									sql = " select c_city_id from c_city " +
-											" where lower(locode) ='" + loadCoreBPFile.getCodLocalidad().trim().toLowerCase() + "' " +
-											" and c_region_id =" + loadCoreBPFile.getC_Region_ID();
-									int cCityID = DB.getSQLValueEx(null, sql);
-									if (cCityID > 0){
-										loadCoreBPFile.setC_City_ID(cCityID);
-									}
-									else{
-										loadCoreBPFile.setIsConfirmed(false);
-										loadCoreBPFile.setErrorMsg("No existe Localidad con ese Código para el País-Departamento indicado.");
+										// Busco localidad según codigo recibido
+										sql = " select c_city_id from c_city " +
+												" where lower(locode) ='" + loadCoreBPFile.getCodLocalidad().trim().toLowerCase() + "' " +
+												" and c_region_id =" + loadCoreBPFile.getC_Region_ID();
+										int cCityID = DB.getSQLValueEx(null, sql);
+										if (cCityID > 0){
+											loadCoreBPFile.setC_City_ID(cCityID);
+										}
+										else{
+											loadCoreBPFile.setIsConfirmed(false);
+											loadCoreBPFile.setErrorMsg("No existe Localidad con ese Código para el País-Departamento indicado.");
+										}
 									}
 								}
 							}

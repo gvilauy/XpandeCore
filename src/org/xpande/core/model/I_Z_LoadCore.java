@@ -321,6 +321,19 @@ public interface I_Z_LoadCore
 	  */
 	public String getUUID();
 
+    /** Column name ValidaLocalidad */
+    public static final String COLUMNNAME_ValidaLocalidad = "ValidaLocalidad";
+
+	/** Set ValidaLocalidad.
+	  * Si se valida o no una localidad ingresada
+	  */
+	public void setValidaLocalidad (boolean ValidaLocalidad);
+
+	/** Get ValidaLocalidad.
+	  * Si se valida o no una localidad ingresada
+	  */
+	public boolean isValidaLocalidad();
+
     /** Column name Z_LoadCore_ID */
     public static final String COLUMNNAME_Z_LoadCore_ID = "Z_LoadCore_ID";
 
