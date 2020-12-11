@@ -76,6 +76,19 @@ public interface I_Z_DataFiltro
 	  */
 	public int getAD_Org_ID();
 
+    /** Column name Anulado */
+    public static final String COLUMNNAME_Anulado = "Anulado";
+
+	/** Set Anulado.
+	  * Si esta anulado o no
+	  */
+	public void setAnulado (boolean Anulado);
+
+	/** Get Anulado.
+	  * Si esta anulado o no
+	  */
+	public boolean isAnulado();
+
     /** Column name C_BP_Group_ID */
     public static final String COLUMNNAME_C_BP_Group_ID = "C_BP_Group_ID";
 
@@ -90,6 +103,19 @@ public interface I_Z_DataFiltro
 	public int getC_BP_Group_ID();
 
 	public I_C_BP_Group getC_BP_Group() throws RuntimeException;
+
+    /** Column name Conciliado */
+    public static final String COLUMNNAME_Conciliado = "Conciliado";
+
+	/** Set Conciliado.
+	  * Conciliado si o no
+	  */
+	public void setConciliado (boolean Conciliado);
+
+	/** Get Conciliado.
+	  * Conciliado si o no
+	  */
+	public boolean isConciliado();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -107,6 +133,19 @@ public interface I_Z_DataFiltro
 	  */
 	public int getCreatedBy();
 
+    /** Column name Depositado */
+    public static final String COLUMNNAME_Depositado = "Depositado";
+
+	/** Set Depositado.
+	  * Si esta o no depositado
+	  */
+	public void setDepositado (boolean Depositado);
+
+	/** Get Depositado.
+	  * Si esta o no depositado
+	  */
+	public boolean isDepositado();
+
     /** Column name Description */
     public static final String COLUMNNAME_Description = "Description";
 
@@ -119,6 +158,45 @@ public interface I_Z_DataFiltro
 	  * Optional short description of the record
 	  */
 	public String getDescription();
+
+    /** Column name Emitido */
+    public static final String COLUMNNAME_Emitido = "Emitido";
+
+	/** Set Emitido.
+	  * Documento emitido
+	  */
+	public void setEmitido (boolean Emitido);
+
+	/** Get Emitido.
+	  * Documento emitido
+	  */
+	public boolean isEmitido();
+
+    /** Column name Entregado */
+    public static final String COLUMNNAME_Entregado = "Entregado";
+
+	/** Set Entregado.
+	  * Si esta entregado o no
+	  */
+	public void setEntregado (boolean Entregado);
+
+	/** Get Entregado.
+	  * Si esta entregado o no
+	  */
+	public boolean isEntregado();
+
+    /** Column name FiltroEstadoMPago */
+    public static final String COLUMNNAME_FiltroEstadoMPago = "FiltroEstadoMPago";
+
+	/** Set FiltroEstadoMPago.
+	  * Si se desea filtrar o no información según estado de medios de pago
+	  */
+	public void setFiltroEstadoMPago (boolean FiltroEstadoMPago);
+
+	/** Get FiltroEstadoMPago.
+	  * Si se desea filtrar o no información según estado de medios de pago
+	  */
+	public boolean isFiltroEstadoMPago();
 
     /** Column name IsActive */
     public static final String COLUMNNAME_IsActive = "IsActive";
@@ -173,6 +251,19 @@ public interface I_Z_DataFiltro
 	  * Type of product
 	  */
 	public String getProductType();
+
+    /** Column name Reemplazado */
+    public static final String COLUMNNAME_Reemplazado = "Reemplazado";
+
+	/** Set Reemplazado.
+	  * Reemplazado si o no
+	  */
+	public void setReemplazado (boolean Reemplazado);
+
+	/** Get Reemplazado.
+	  * Reemplazado si o no
+	  */
+	public boolean isReemplazado();
 
     /** Column name TipoDataFiltro */
     public static final String COLUMNNAME_TipoDataFiltro = "TipoDataFiltro";
