@@ -39,8 +39,17 @@ public class NumberToString {
     }
 
     public String getStringOfNumber(int num){
+
         this.counter = num;
-        return convertir(num);
+
+        String result = this.convertir(num);
+
+        // Si el numero termina en 1, debo poner el liter UNO en vez del literal UN
+        String numero = String.valueOf(num);
+        if (numero.endsWith("1")){
+            result = result.substring(0, result.length() - 2) + "UNO";
+        }
+        return result;
     }
 
     private String convertir(int _counter){
