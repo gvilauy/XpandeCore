@@ -46,8 +46,10 @@ public class NumberToString {
 
         // Si el numero termina en 1, debo poner el liter UNO en vez del literal UN
         String numero = String.valueOf(num);
-        if (numero.endsWith("1")){
-            result = result.substring(0, result.length() - 2) + "UNO";
+        if ((!numero.endsWith("11")) && (!numero.endsWith("111")) && (!numero.endsWith("1111"))){
+            if (numero.endsWith("1")){
+                result = result.substring(0, result.length() - 2) + "UNO";
+            }
         }
         return result;
     }
