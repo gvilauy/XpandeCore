@@ -45,4 +45,29 @@ public final class PriceListUtils {
         return model;
     }
 
+    /***
+     * Obtiene lista de precios para una determinada organización recibida.
+     * Xpande. Created by Gabriel Vila on 2/16/21.
+     * @param ctx
+     * @param adClientID
+     * @param adOrgID
+     * @param cCurrencyID
+     * @param isSOPriceList
+     * @param onlyActives
+     * @param trxName
+     * @return
+     */
+    public static MPriceList getPriceListByOrg(Properties ctx, int adClientID, int adOrgID, int cCurrencyID, boolean isSOPriceList,
+                                               boolean onlyActives, String trxName) {
+
+        String whereClause = X_M_PriceList.COLUMNNAME_AD_Client_ID + " =" + adClientID +
+                " AND " + X_M_PriceList.COLUMNNAME_AD_Org_ID + " =" + adOrgID +
+                " AND " + X_M_PriceList.COLUMNNAME_C_Currency_ID + " =" + cCurrencyID +
+                " AND " + X_M_PriceList.COLUMNNAME_IsSOPriceList + " ='" + ((isSOPriceList) ? 'Y':'N') + "'";
+
+        MPriceList model = new Query(ctx, I_M_PriceList.Table_Name, whereClause, trxName).setOnlyActiveRecords(onlyActives).first();
+
+        return model;
+    }
+
 }
