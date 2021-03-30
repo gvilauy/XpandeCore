@@ -635,11 +635,15 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 				// Numero de identificación
 				if (loadCoreBPFile.isConfirmed()){
 					if ((loadCoreBPFile.getTaxID() == null) || (loadCoreBPFile.getTaxID().trim().equalsIgnoreCase(""))){
-						// Si el grupo de impuesto no permite numero de identificación nulo para clienes, aviso y salgo.
-						X_C_TaxGroup taxGroup = (X_C_TaxGroup) loadCoreBPFile.getC_TaxGroup();
-						if (!taxGroup.get_ValueAsBoolean("AllowCustomerNull")){
-							loadCoreBPFile.setIsConfirmed(false);
-							loadCoreBPFile.setErrorMsg("Debe indicar Número de Identificación cuando el socio de negocio esta marcado como Cliente");
+
+						// Si es cliente
+						if (loadCoreBPFile.isCustomer()){
+							// Si el grupo de impuesto no permite numero de identificación nulo para clienes, aviso y salgo.
+							X_C_TaxGroup taxGroup = (X_C_TaxGroup) loadCoreBPFile.getC_TaxGroup();
+							if (!taxGroup.get_ValueAsBoolean("AllowCustomerNull")){
+								loadCoreBPFile.setIsConfirmed(false);
+								loadCoreBPFile.setErrorMsg("Debe indicar Número de Identificación cuando el socio de negocio esta marcado como Cliente");
+							}
 						}
 					}
 					else{
