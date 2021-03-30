@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for Z_LoadCoreBPFile
  *  @author Adempiere (generated) 
- *  @version Release 3.9.0
+ *  @version Release 3.9.1
  */
 public interface I_Z_LoadCoreBPFile 
 {
@@ -384,6 +384,32 @@ public interface I_Z_LoadCoreBPFile
 	  * Additional Name
 	  */
 	public String getName2();
+
+    /** Column name NomLocalidad */
+    public static final String COLUMNNAME_NomLocalidad = "NomLocalidad";
+
+	/** Set NomLocalidad.
+	  * Nombre de Localidad 
+	  */
+	public void setNomLocalidad (String NomLocalidad);
+
+	/** Get NomLocalidad.
+	  * Nombre de Localidad 
+	  */
+	public String getNomLocalidad();
+
+    /** Column name NomLocalizacion */
+    public static final String COLUMNNAME_NomLocalizacion = "NomLocalizacion";
+
+	/** Set NomLocalizacion.
+	  * Nombre de Localización
+	  */
+	public void setNomLocalizacion (String NomLocalizacion);
+
+	/** Get NomLocalizacion.
+	  * Nombre de Localización
+	  */
+	public String getNomLocalizacion();
 
     /** Column name Phone */
     public static final String COLUMNNAME_Phone = "Phone";

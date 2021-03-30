@@ -23,14 +23,14 @@ import org.compiere.model.*;
 
 /** Generated Model for Z_LoadCoreBPFile
  *  @author Adempiere (generated) 
- *  @version Release 3.9.0 - $Id$ */
+ *  @version Release 3.9.1 - $Id$ */
 public class X_Z_LoadCoreBPFile extends PO implements I_Z_LoadCoreBPFile, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20200921L;
+	private static final long serialVersionUID = 20210330L;
 
     /** Standard Constructor */
     public X_Z_LoadCoreBPFile (Properties ctx, int Z_LoadCoreBPFile_ID, String trxName)
@@ -570,6 +570,40 @@ public class X_Z_LoadCoreBPFile extends PO implements I_Z_LoadCoreBPFile, I_Pers
 	public String getName2 () 
 	{
 		return (String)get_Value(COLUMNNAME_Name2);
+	}
+
+	/** Set NomLocalidad.
+		@param NomLocalidad 
+		Nombre de Localidad 
+	  */
+	public void setNomLocalidad (String NomLocalidad)
+	{
+		set_Value (COLUMNNAME_NomLocalidad, NomLocalidad);
+	}
+
+	/** Get NomLocalidad.
+		@return Nombre de Localidad 
+	  */
+	public String getNomLocalidad () 
+	{
+		return (String)get_Value(COLUMNNAME_NomLocalidad);
+	}
+
+	/** Set NomLocalizacion.
+		@param NomLocalizacion 
+		Nombre de Localización
+	  */
+	public void setNomLocalizacion (String NomLocalizacion)
+	{
+		set_Value (COLUMNNAME_NomLocalizacion, NomLocalizacion);
+	}
+
+	/** Get NomLocalizacion.
+		@return Nombre de Localización
+	  */
+	public String getNomLocalizacion () 
+	{
+		return (String)get_Value(COLUMNNAME_NomLocalizacion);
 	}
 
 	/** Set Phone.

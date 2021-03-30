@@ -24,6 +24,7 @@ import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -653,6 +654,7 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 							loadCoreBPFile.setErrorMsg("Ya existe en el sistema un Socio de Negocio con este Número de Identificación.");
 						}
 
+						/*
 						// Verifico si ya existe un socio de negocio en esta carga con ese número de identificación.
 						sql = " select count(*) from z_loadcorebpfile " +
 								" where rtrim(taxid) ='" + loadCoreBPFile.getTaxID().trim() + "'" +
@@ -662,6 +664,7 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 							loadCoreBPFile.setIsConfirmed(false);
 							loadCoreBPFile.setErrorMsg("Número de Identificación repetido en esta carga.");
 						}
+						*/
 					}
 				}
 
@@ -969,34 +972,47 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 					continue;
 				}
 
-				// Creo socio de negocio
-				MBPartner partner = new MBPartner(getCtx(), 0, get_TrxName());
-				partner.setAD_Org_ID(0);
-				partner.setName(loadCoreBPFile.getName().trim().toUpperCase());
-				partner.setC_TaxGroup_ID(loadCoreBPFile.getC_TaxGroup_ID());
+				MBPartner partner = null;
 
-				if (loadCoreBPFile.getTaxID() != null){
-					partner.setTaxID(loadCoreBPFile.getTaxID().trim());
+				// Si ya existe socio de negocio con esa Razón Social, lo obtengo y solo le agrego
+				// una nueva localización.
+				String sql = " select c_bpartner_id " +
+						" from c_bpartner " +
+						" where upper(rtrim(name)) ='" + loadCoreBPFile.getName().trim().toUpperCase() + "'";
+				int cBpartnerID = DB.getSQLValueEx(get_TrxName(), sql);
+				if (cBpartnerID > 0){
+					partner = new MBPartner(getCtx(), cBpartnerID, get_TrxName());
 				}
+				else{
+					// Creo socio de negocio
+					partner = new MBPartner(getCtx(), 0, get_TrxName());
+					partner.setAD_Org_ID(0);
+					partner.setName(loadCoreBPFile.getName().trim().toUpperCase());
+					partner.setC_TaxGroup_ID(loadCoreBPFile.getC_TaxGroup_ID());
 
-				partner.setIsCustomer(loadCoreBPFile.isCustomer());
-				partner.setIsVendor(loadCoreBPFile.isVendor());
-				partner.setIsEmployee(loadCoreBPFile.isEmployee());
-				partner.setIsSalesRep(loadCoreBPFile.isSalesRep());
-				partner.setC_BP_Group_ID(1000000);
+					if (loadCoreBPFile.getTaxID() != null){
+						partner.setTaxID(loadCoreBPFile.getTaxID().trim());
+					}
 
-				if ((loadCoreBPFile.getCodigoInterno() != null) && (!loadCoreBPFile.getCodigoInterno().trim().equalsIgnoreCase(""))){
-					partner.setValue(loadCoreBPFile.getCodigoInterno().trim());
-				}
-				if ((loadCoreBPFile.getName2() != null) && (!loadCoreBPFile.getName2().trim().equalsIgnoreCase(""))){
-					partner.setName2(loadCoreBPFile.getName2().trim().toUpperCase());
-				}
-				else {
-					partner.setName2(partner.getName());
-				}
+					partner.setIsCustomer(loadCoreBPFile.isCustomer());
+					partner.setIsVendor(loadCoreBPFile.isVendor());
+					partner.setIsEmployee(loadCoreBPFile.isEmployee());
+					partner.setIsSalesRep(loadCoreBPFile.isSalesRep());
+					partner.setC_BP_Group_ID(1000000);
 
-				partner.set_ValueOfColumn(X_Z_LoadCore.COLUMNNAME_Z_LoadCore_ID, this.get_ID());
-				partner.saveEx();
+					if ((loadCoreBPFile.getCodigoInterno() != null) && (!loadCoreBPFile.getCodigoInterno().trim().equalsIgnoreCase(""))){
+						partner.setValue(loadCoreBPFile.getCodigoInterno().trim());
+					}
+					if ((loadCoreBPFile.getName2() != null) && (!loadCoreBPFile.getName2().trim().equalsIgnoreCase(""))){
+						partner.setName2(loadCoreBPFile.getName2().trim().toUpperCase());
+					}
+					else {
+						partner.setName2(partner.getName());
+					}
+
+					partner.set_ValueOfColumn(X_Z_LoadCore.COLUMNNAME_Z_LoadCore_ID, this.get_ID());
+					partner.saveEx();
+				}
 
 				// Creo localizacion
 				MLocation location = null;
@@ -1012,6 +1028,11 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 						location.setCity(city.getName());
 						location.setC_City_ID(loadCoreBPFile.getC_City_ID());
 					}
+					else{
+						if ((loadCoreBPFile.getNomLocalidad() != null) && (!loadCoreBPFile.getNomLocalidad().trim().equalsIgnoreCase(""))){
+							location.setCity(loadCoreBPFile.getNomLocalidad().trim().toUpperCase());
+						}
+					}
 
 					if ((loadCoreBPFile.getAddress1() != null) && (!loadCoreBPFile.getAddress1().trim().equalsIgnoreCase(""))){
 						location.setAddress1(loadCoreBPFile.getAddress1().trim().toUpperCase());
@@ -1026,12 +1047,18 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 					partnerLocation.setC_BPartner_ID(partner.get_ID());
 					partnerLocation.setC_Location_ID(location.get_ID());
 
-					if ((loadCoreBPFile.getAddress1() != null) && (!loadCoreBPFile.getAddress1().trim().equalsIgnoreCase(""))){
-						partnerLocation.setName(loadCoreBPFile.getAddress1().trim().toUpperCase());
+					if ((loadCoreBPFile.getNomLocalizacion() != null) && (!loadCoreBPFile.getNomLocalizacion().trim().equalsIgnoreCase(""))){
+						partnerLocation.setName(loadCoreBPFile.getNomLocalizacion().trim().toUpperCase());
 					}
 					else{
-						partnerLocation.setName(location.getRegionName());
+						if ((loadCoreBPFile.getAddress1() != null) && (!loadCoreBPFile.getAddress1().trim().equalsIgnoreCase(""))){
+							partnerLocation.setName(loadCoreBPFile.getAddress1().trim().toUpperCase());
+						}
+						else{
+							partnerLocation.setName(location.getRegionName());
+						}
 					}
+
 					if ((partnerLocation.getName() == null) || (partnerLocation.getName().trim().equalsIgnoreCase(""))){
 						partnerLocation.setName("SIN DIRECCION");
 					}
