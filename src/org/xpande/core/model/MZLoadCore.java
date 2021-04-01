@@ -966,6 +966,8 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 	 */
 	private void generatePartners(){
 
+		MBPartner partner;
+
 		try{
 
 			List<MZLoadCoreBPFile> loadCoreBPFileList = this.getPartnerLines();
@@ -975,8 +977,6 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 				if (!loadCoreBPFile.isConfirmed()){
 					continue;
 				}
-
-				MBPartner partner = null;
 
 				// Si ya existe socio de negocio con esa Razón Social, lo obtengo y solo le agrego
 				// una nueva localización.
