@@ -115,7 +115,6 @@ public class ValidatorCore implements ModelValidator {
         }
 
         return mensaje;
-
     }
 
     /***

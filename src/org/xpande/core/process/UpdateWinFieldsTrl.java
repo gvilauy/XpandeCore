@@ -83,7 +83,6 @@ public class UpdateWinFieldsTrl extends SvrProcess {
         return "OK";
     }
 
-
     /***
      * Actualiza traduccion de field recibido, segun elemento de la columna y lenguaje recibido en este proceso.
      * Xpande. Created by Gabriel Vila on 5/18/18.

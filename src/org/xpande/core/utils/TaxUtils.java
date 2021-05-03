@@ -137,7 +137,6 @@ public final class TaxUtils {
             factores = new int[]{2, 9, 8, 7, 6, 3, 4};
         }
 
-
         int suma = 0;
         for(int i=0; i<ci.length()-1; i++ ){
             int digito = Integer.parseInt(ci.charAt(i) + "" ) ;
