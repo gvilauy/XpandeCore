@@ -847,7 +847,7 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 					if (!loadCoreAcctFile.getParentValue().trim().equalsIgnoreCase("0")){
 						// Verifico si existe una cuenta con este código en esta carga de archivo
 						sql = " select count(*) from z_loadcoreacctfile where rtrim(value) ='" + loadCoreAcctFile.getParentValue().trim() + "'";
-						int contador = DB.getSQLValueEx(null, sql);
+						int contador = DB.getSQLValueEx(get_TrxName(), sql);
 						if (contador <= 0){
 							loadCoreAcctFile.setIsConfirmed(false);
 							loadCoreAcctFile.setErrorMsg("No existe cuenta padre con código: " + loadCoreAcctFile.getParentValue().trim());
@@ -871,7 +871,7 @@ public class MZLoadCore extends X_Z_LoadCore implements DocAction, DocOptions {
 
 						// Verifico codigo de cuenta unicó
 						sql = " select count(*) from z_loadcoreacctfile where rtrim(value) ='" + loadCoreAcctFile.getValue().trim() + "'";
-						int contador = DB.getSQLValueEx(null, sql);
+						int contador = DB.getSQLValueEx(get_TrxName(), sql);
 						if (contador > 1){
 							loadCoreAcctFile.setIsConfirmed(false);
 							loadCoreAcctFile.setErrorMsg("Código de cuenta repetido: " + loadCoreAcctFile.getValue().trim());
