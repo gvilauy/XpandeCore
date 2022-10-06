@@ -23,14 +23,14 @@ import org.compiere.model.*;
 
 /** Generated Model for Z_DataFiltro
  *  @author Adempiere (generated) 
- *  @version Release 3.9.0 - $Id$ */
+ *  @version Release 3.9.1 - $Id$ */
 public class X_Z_DataFiltro extends PO implements I_Z_DataFiltro, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201209L;
+	private static final long serialVersionUID = 20220524L;
 
     /** Standard Constructor */
     public X_Z_DataFiltro (Properties ctx, int Z_DataFiltro_ID, String trxName)
@@ -48,6 +48,8 @@ public class X_Z_DataFiltro extends PO implements I_Z_DataFiltro, I_Persistent
 // Y
 			setEntregado (true);
 // Y
+			setEsProductoBalanza (false);
+// N
 			setFiltroEstadoMPago (false);
 // N
 			setName (null);
@@ -116,6 +118,34 @@ public class X_Z_DataFiltro extends PO implements I_Z_DataFiltro, I_Persistent
 	public String getAccountType () 
 	{
 		return (String)get_Value(COLUMNNAME_AccountType);
+	}
+
+	public I_AD_User getAD_User() throws RuntimeException
+    {
+		return (I_AD_User)MTable.get(getCtx(), I_AD_User.Table_Name)
+			.getPO(getAD_User_ID(), get_TrxName());	}
+
+	/** Set User/Contact.
+		@param AD_User_ID 
+		User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User_ID (int AD_User_ID)
+	{
+		if (AD_User_ID < 1) 
+			set_Value (COLUMNNAME_AD_User_ID, null);
+		else 
+			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
+	}
+
+	/** Get User/Contact.
+		@return User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Anulado.
@@ -283,6 +313,27 @@ public class X_Z_DataFiltro extends PO implements I_Z_DataFiltro, I_Persistent
 		return false;
 	}
 
+	/** Set EsProductoBalanza.
+		@param EsProductoBalanza EsProductoBalanza	  */
+	public void setEsProductoBalanza (boolean EsProductoBalanza)
+	{
+		set_Value (COLUMNNAME_EsProductoBalanza, Boolean.valueOf(EsProductoBalanza));
+	}
+
+	/** Get EsProductoBalanza.
+		@return EsProductoBalanza	  */
+	public boolean isEsProductoBalanza () 
+	{
+		Object oo = get_Value(COLUMNNAME_EsProductoBalanza);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
 	/** Set FiltroEstadoMPago.
 		@param FiltroEstadoMPago 
 		Si se desea filtrar o no información según estado de medios de pago
@@ -406,16 +457,16 @@ public class X_Z_DataFiltro extends PO implements I_Z_DataFiltro, I_Persistent
 		return false;
 	}
 
-	/** TipoDataFiltro AD_Reference_ID=1000064 */
-	public static final int TIPODATAFILTRO_AD_Reference_ID=1000064;
-	/** CONTABLES = CONTABLES */
-	public static final String TIPODATAFILTRO_CONTABLES = "CONTABLES";
-	/** STOCK = STOCK */
-	public static final String TIPODATAFILTRO_STOCK = "STOCK";
+	/** TipoDataFiltro AD_Reference_ID=1000063 */
+	public static final int TIPODATAFILTRO_AD_Reference_ID=1000063;
 	/** COMERCIALES = COMERCIALES */
 	public static final String TIPODATAFILTRO_COMERCIALES = "COMERCIALES";
+	/** CONTABLES = CONTABLES */
+	public static final String TIPODATAFILTRO_CONTABLES = "CONTABLES";
 	/** FINANCIEROS = FINANCIEROS */
 	public static final String TIPODATAFILTRO_FINANCIEROS = "FINANCIEROS";
+	/** STOCK = STOCK */
+	public static final String TIPODATAFILTRO_STOCK = "STOCK";
 	/** Set TipoDataFiltro.
 		@param TipoDataFiltro 
 		Tipo de filtro para reportes y consultas
@@ -434,23 +485,6 @@ public class X_Z_DataFiltro extends PO implements I_Z_DataFiltro, I_Persistent
 		return (String)get_Value(COLUMNNAME_TipoDataFiltro);
 	}
 
-	/** Set Immutable Universally Unique Identifier.
-		@param UUID 
-		Immutable Universally Unique Identifier
-	  */
-	public void setUUID (String UUID)
-	{
-		set_Value (COLUMNNAME_UUID, UUID);
-	}
-
-	/** Get Immutable Universally Unique Identifier.
-		@return Immutable Universally Unique Identifier
-	  */
-	public String getUUID () 
-	{
-		return (String)get_Value(COLUMNNAME_UUID);
-	}
-
 	/** Set Z_DataFiltro ID.
 		@param Z_DataFiltro_ID Z_DataFiltro ID	  */
 	public void setZ_DataFiltro_ID (int Z_DataFiltro_ID)
@@ -466,6 +500,86 @@ public class X_Z_DataFiltro extends PO implements I_Z_DataFiltro, I_Persistent
 	public int getZ_DataFiltro_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Z_DataFiltro_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Z_ProductoFamilia ID.
+		@param Z_ProductoFamilia_ID Z_ProductoFamilia ID	  */
+	public void setZ_ProductoFamilia_ID (int Z_ProductoFamilia_ID)
+	{
+		if (Z_ProductoFamilia_ID < 1) 
+			set_Value (COLUMNNAME_Z_ProductoFamilia_ID, null);
+		else 
+			set_Value (COLUMNNAME_Z_ProductoFamilia_ID, Integer.valueOf(Z_ProductoFamilia_ID));
+	}
+
+	/** Get Z_ProductoFamilia ID.
+		@return Z_ProductoFamilia ID	  */
+	public int getZ_ProductoFamilia_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Z_ProductoFamilia_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Z_ProductoRubro ID.
+		@param Z_ProductoRubro_ID Z_ProductoRubro ID	  */
+	public void setZ_ProductoRubro_ID (int Z_ProductoRubro_ID)
+	{
+		if (Z_ProductoRubro_ID < 1) 
+			set_Value (COLUMNNAME_Z_ProductoRubro_ID, null);
+		else 
+			set_Value (COLUMNNAME_Z_ProductoRubro_ID, Integer.valueOf(Z_ProductoRubro_ID));
+	}
+
+	/** Get Z_ProductoRubro ID.
+		@return Z_ProductoRubro ID	  */
+	public int getZ_ProductoRubro_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Z_ProductoRubro_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Z_ProductoSeccion ID.
+		@param Z_ProductoSeccion_ID Z_ProductoSeccion ID	  */
+	public void setZ_ProductoSeccion_ID (int Z_ProductoSeccion_ID)
+	{
+		if (Z_ProductoSeccion_ID < 1) 
+			set_Value (COLUMNNAME_Z_ProductoSeccion_ID, null);
+		else 
+			set_Value (COLUMNNAME_Z_ProductoSeccion_ID, Integer.valueOf(Z_ProductoSeccion_ID));
+	}
+
+	/** Get Z_ProductoSeccion ID.
+		@return Z_ProductoSeccion ID	  */
+	public int getZ_ProductoSeccion_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Z_ProductoSeccion_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Z_ProductoSubfamilia ID.
+		@param Z_ProductoSubfamilia_ID Z_ProductoSubfamilia ID	  */
+	public void setZ_ProductoSubfamilia_ID (int Z_ProductoSubfamilia_ID)
+	{
+		if (Z_ProductoSubfamilia_ID < 1) 
+			set_Value (COLUMNNAME_Z_ProductoSubfamilia_ID, null);
+		else 
+			set_Value (COLUMNNAME_Z_ProductoSubfamilia_ID, Integer.valueOf(Z_ProductoSubfamilia_ID));
+	}
+
+	/** Get Z_ProductoSubfamilia ID.
+		@return Z_ProductoSubfamilia ID	  */
+	public int getZ_ProductoSubfamilia_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_Z_ProductoSubfamilia_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

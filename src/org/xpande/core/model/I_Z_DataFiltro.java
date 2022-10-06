@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for Z_DataFiltro
  *  @author Adempiere (generated) 
- *  @version Release 3.9.0
+ *  @version Release 3.9.1
  */
 public interface I_Z_DataFiltro 
 {
@@ -31,7 +31,7 @@ public interface I_Z_DataFiltro
     /** TableName=Z_DataFiltro */
     public static final String Table_Name = "Z_DataFiltro";
 
-    /** AD_Table_ID=1000335 */
+    /** AD_Table_ID=1000349 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -75,6 +75,21 @@ public interface I_Z_DataFiltro
 	  * Organizational entity within client
 	  */
 	public int getAD_Org_ID();
+
+    /** Column name AD_User_ID */
+    public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
+
+	/** Set User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User_ID (int AD_User_ID);
+
+	/** Get User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User_ID();
+
+	public I_AD_User getAD_User() throws RuntimeException;
 
     /** Column name Anulado */
     public static final String COLUMNNAME_Anulado = "Anulado";
@@ -185,6 +200,15 @@ public interface I_Z_DataFiltro
 	  */
 	public boolean isEntregado();
 
+    /** Column name EsProductoBalanza */
+    public static final String COLUMNNAME_EsProductoBalanza = "EsProductoBalanza";
+
+	/** Set EsProductoBalanza	  */
+	public void setEsProductoBalanza (boolean EsProductoBalanza);
+
+	/** Get EsProductoBalanza	  */
+	public boolean isEsProductoBalanza();
+
     /** Column name FiltroEstadoMPago */
     public static final String COLUMNNAME_FiltroEstadoMPago = "FiltroEstadoMPago";
 
@@ -294,19 +318,6 @@ public interface I_Z_DataFiltro
 	  */
 	public int getUpdatedBy();
 
-    /** Column name UUID */
-    public static final String COLUMNNAME_UUID = "UUID";
-
-	/** Set Immutable Universally Unique Identifier.
-	  * Immutable Universally Unique Identifier
-	  */
-	public void setUUID (String UUID);
-
-	/** Get Immutable Universally Unique Identifier.
-	  * Immutable Universally Unique Identifier
-	  */
-	public String getUUID();
-
     /** Column name Z_DataFiltro_ID */
     public static final String COLUMNNAME_Z_DataFiltro_ID = "Z_DataFiltro_ID";
 
@@ -315,4 +326,40 @@ public interface I_Z_DataFiltro
 
 	/** Get Z_DataFiltro ID	  */
 	public int getZ_DataFiltro_ID();
+
+    /** Column name Z_ProductoFamilia_ID */
+    public static final String COLUMNNAME_Z_ProductoFamilia_ID = "Z_ProductoFamilia_ID";
+
+	/** Set Z_ProductoFamilia ID	  */
+	public void setZ_ProductoFamilia_ID (int Z_ProductoFamilia_ID);
+
+	/** Get Z_ProductoFamilia ID	  */
+	public int getZ_ProductoFamilia_ID();
+
+    /** Column name Z_ProductoRubro_ID */
+    public static final String COLUMNNAME_Z_ProductoRubro_ID = "Z_ProductoRubro_ID";
+
+	/** Set Z_ProductoRubro ID	  */
+	public void setZ_ProductoRubro_ID (int Z_ProductoRubro_ID);
+
+	/** Get Z_ProductoRubro ID	  */
+	public int getZ_ProductoRubro_ID();
+
+    /** Column name Z_ProductoSeccion_ID */
+    public static final String COLUMNNAME_Z_ProductoSeccion_ID = "Z_ProductoSeccion_ID";
+
+	/** Set Z_ProductoSeccion ID	  */
+	public void setZ_ProductoSeccion_ID (int Z_ProductoSeccion_ID);
+
+	/** Get Z_ProductoSeccion ID	  */
+	public int getZ_ProductoSeccion_ID();
+
+    /** Column name Z_ProductoSubfamilia_ID */
+    public static final String COLUMNNAME_Z_ProductoSubfamilia_ID = "Z_ProductoSubfamilia_ID";
+
+	/** Set Z_ProductoSubfamilia ID	  */
+	public void setZ_ProductoSubfamilia_ID (int Z_ProductoSubfamilia_ID);
+
+	/** Get Z_ProductoSubfamilia ID	  */
+	public int getZ_ProductoSubfamilia_ID();
 }
